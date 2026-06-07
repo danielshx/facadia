@@ -11,6 +11,10 @@ every defect, and drafts the legally required inspection report.
 ![Runs on CPU](https://img.shields.io/badge/surveyor-runs%20on%20CPU-success.svg)
 ![AI](https://img.shields.io/badge/AI-Facadia--VLM-6e56cf.svg)
 
+![Facadia, 30-second demo](docs/img/demo.gif)
+
+<sub>Ordinary drone footage → 3D digital twin → defect measured in mm → Facadia-VLM grades severity → auto-drafted MBIS report + building-health score. 36-second loop; see the [2-min technical film](video) for the full story.</sub>
+
 ![Facadia dashboard, report view](docs/img/dashboard.png)
 
 <sub>Report view: defect schedule, severity, measurements, drafted MBIS findings.</sub>

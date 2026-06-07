@@ -1,0 +1,27 @@
+{
+  "name": "facadia-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Facadia — AI Building Surveyor · cinematic 2-min technical demo (Remotion)",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render Facadia out/facadia.mp4 --concurrency 8",
+    "render:fast": "remotion render Facadia out/facadia_preview.mp4 --scale 0.5 --concurrency 8",
+    "render:loop": "remotion render FacadiaLoop out/facadia-loop.mp4 --concurrency 8",
+    "still": "remotion still Facadia out/frame.png",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.473",
+    "@remotion/google-fonts": "4.0.473",
+    "@remotion/transitions": "4.0.473",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.473"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "typescript": "5.6.3"
+  }
+}

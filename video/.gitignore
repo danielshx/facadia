@@ -1,0 +1,16 @@
+node_modules/
+out/
+.remotion/
+# Symlinked / large media — keep footage out of git (mirrors repo root policy)
+public/real.mp4
+public/sim.mp4
+public/*.mov
+public/audio/**/*.mp3
+public/audio/**/*.wav
+public/audio/**/*.m4a
+*.log
+
+public/pilot.mp4
+
+public/controller.mp4
+public/overview.jpg

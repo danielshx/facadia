@@ -1,0 +1,50 @@
+{
+  "_comment": "PLACEHOLDER — replace with real output from survey/ (detect.py + gsd.py + reason.py + score.py + report.py). Every number here drives the HUD.",
+  "building": {
+    "id": "HK-DEMO-0962",
+    "name": "North Elevation · External Wall",
+    "captured": "2026-06-07",
+    "frames": 1240,
+    "healthScore": 62
+  },
+  "gsd": {
+    "mmPerPx": 0.42,
+    "standoffM": 6.2,
+    "sensor": "DJI 4K · 1/2.3\""
+  },
+  "hero": {
+    "id": "D-014",
+    "class": "Crack",
+    "bbox": { "x": 0.36, "y": 0.40, "w": 0.32, "h": 0.20 },
+    "widthMm": 1.8,
+    "lengthMm": 470,
+    "confidence": 0.93,
+    "anchor": "BRE Digest 251 · Cat 2",
+    "severity": 4,
+    "cause": "Chloride-induced reinforcement corrosion under coastal exposure — expansive rust at the rebar opens the surface crack.",
+    "action": "Repair within cycle · assess structural impact (RI)",
+    "mbis": "External Walls"
+  },
+  "defects": [
+    { "class": "Crack", "severity": 4, "x": 0.47, "y": 0.50 },
+    { "class": "Spalling", "severity": 5, "x": 0.30, "y": 0.66 },
+    { "class": "Water ingress", "severity": 2, "x": 0.63, "y": 0.40 },
+    { "class": "Tile debond", "severity": 3, "x": 0.74, "y": 0.57 },
+    { "class": "Corrosion", "severity": 3, "x": 0.20, "y": 0.34 },
+    { "class": "Efflorescence", "severity": 1, "x": 0.55, "y": 0.24 },
+    { "class": "Crack", "severity": 2, "x": 0.82, "y": 0.46 },
+    { "class": "Render loss", "severity": 3, "x": 0.40, "y": 0.74 }
+  ],
+  "report": {
+    "title": "MBIS — External Wall Inspection",
+    "ordinance": "Cap. 123 · MBIS · Buildings 30yr+ · 10-yr cycle",
+    "lines": [
+      "Defect D-014 · Crack · External Wall (North)",
+      "Surface width 1.8 mm — exceeds 0.3 mm durability limit (CoP Structural Use of Concrete 2013).",
+      "Probable cause: chloride-induced rebar corrosion, coastal exposure.",
+      "Severity 4 / Serious — BRE Digest 251, Cat 2–3.",
+      "Recommendation: repair within inspection cycle; assess structural impact.",
+      "Subject to verification & sign-off by Registered Inspector."
+    ]
+  }
+}
