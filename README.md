@@ -15,14 +15,6 @@ every defect, and drafts the legally required inspection report.
 
 <sub>Ordinary drone footage → 3D digital twin → defect measured in mm → Facadia-VLM grades severity → auto-drafted MBIS report + building-health score. 36-second loop; see the [2-min technical film](video) for the full story.</sub>
 
-![Facadia dashboard, report view](docs/img/dashboard.png)
-
-<sub>Report view: defect schedule, severity, measurements, drafted MBIS findings.</sub>
-
-![Facadia dashboard, 3D risk view](docs/img/dashboard-3d.png)
-
-<sub>3D risk view: defects mapped onto the building, orbit and zoom. Placement is illustrative; see [HONESTY.md](HONESTY.md).</sub>
-
 </div>
 
 Facadia's vision-language model reads a building façade from ordinary drone footage.
