@@ -37,7 +37,7 @@ def log(msg: str) -> None:
     print(f"[app {time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
 
-app = FastAPI(title="OpenEyes — live reconstruction")
+app = FastAPI(title="Facadia — live reconstruction")
 app.mount("/outputs", StaticFiles(directory=str(OUT)), name="outputs")
 
 _model = None
@@ -65,7 +65,7 @@ threading.Thread(target=get_model, daemon=True).start()
 
 PAGE = """<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OpenEyes — see the scene in 3D</title>
+<title>Facadia — see the scene in 3D</title>
 <style>
  :root{color-scheme:dark}
  body{margin:0;background:#0a0c10;color:#e6e9ef;font:16px/1.5 system-ui,sans-serif;
@@ -78,7 +78,7 @@ PAGE = """<!doctype html><html lang="en"><head>
  #status{color:#8b94a7;min-height:1.4em}video{width:100%;max-width:520px;border-radius:12px;background:#000}
  .wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:12px;align-items:center}
 </style></head><body>
-<h1>OpenEyes — reconstruct the scene</h1>
+<h1>Facadia — reconstruct the scene</h1>
 <p>Take or pick a few photos of the scene from different spots. We rebuild it in 3D — live.</p>
 <div class="wrap">
   <label>📷 Choose / take photos<input id="f" type="file" accept="image/*" multiple capture="environment"></label>

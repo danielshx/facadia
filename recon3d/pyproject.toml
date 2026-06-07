@@ -1,7 +1,7 @@
 [project]
 name = "recon3d"
 version = "0.1.0"
-description = "OpenEyes 3D reconstruction service (VGGT / VGGT-Omega) — self-contained, runs on a CUDA GPU (RunPod)."
+description = "Facadia 3D reconstruction service (VGGT / VGGT-Omega) — self-contained, runs on a CUDA GPU (RunPod)."
 requires-python = ">=3.11"
 
 # NOTE: torch + the VGGT model only install/run on a CUDA Linux box (RunPod Pod),

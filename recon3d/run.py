@@ -44,7 +44,7 @@ def _convert_heic(images_dir: str) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="OpenEyes 3D reconstruction (VGGT / VGGT-Omega)")
+    ap = argparse.ArgumentParser(description="Facadia 3D reconstruction (VGGT / VGGT-Omega)")
     ap.add_argument("--clips-dir", default="data/clips", help="folder of .mp4 clips")
     ap.add_argument("--clip", action="append", default=None,
                     help="specific clip path(s); repeatable. Use ONE clip for the most "

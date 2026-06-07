@@ -1,19 +1,20 @@
-# recon3d — 3D reconstruction (VGGT / VGGT-Omega)
+# recon3d — 3D reconstruction (VGGT + Gaussian Splatting)
 
-The OpenEyes "wow" closer: rebuild scene geometry from independent eyewitness
-angles. Geometry that lines up across uncoordinated sources is extremely hard to
-fake — the strongest corroboration signal in the trust score.
+The **3D layer of Facadia**: rebuild a building from ordinary drone footage into a
+navigable 3D model — a point cloud or a photorealistic Gaussian splat. It gives the
+façade a real, scaled geometry (the surface defects are located and measured on)
+and the cinematic fly-through reveal for the pitch. The defect-grading AI lives in
+the sibling [`survey/`](../survey) module; this folder is the geometry half.
 
-**Self-contained by design.** This folder owns its own copy of the demo clips
-(`data/clips/`), its own deps, and its own viewer. It does not read or write any
-sibling folder (`angles/`, `apps/web`, `services/api`) at runtime, so it can be
-developed and demoed without touching teammates' work.
+**Self-contained by design.** This folder owns its own copy of the input clips
+(`data/clips/`), its own deps, and its own viewer, so it can be developed and
+demoed on its own (it needs an NVIDIA GPU — see below).
 
 ## What it does
 
 ```
 data/clips/*.mp4  ──▶  frames  ──▶  VGGT(-Omega)  ──▶  out/scene.glb
-   (5 angles)        sharp, sampled   poses + depth     point cloud + cameras
+  (drone pass)       sharp, sampled   poses + depth     point cloud + cameras
 ```
 
 - `core/frames.py` — sample sharp frames across the clips
@@ -58,13 +59,13 @@ Output: `out/scene.glb`. Download it from the pod, then **stop the pod**.
 ## Viewing
 
 ```bash
-# from services/recon3d/, serve the folder so the viewer can fetch out/scene.glb:
+# from recon3d/, serve the folder so the viewer can fetch out/scene.glb:
 python -m http.server 8080
 # open http://localhost:8080/viewer/
 ```
 
-The GLB is frontend-agnostic — it can later be handed to the `angles/` or
-`apps/web` frontend (static asset or S3) without changing this service.
+The GLB is frontend-agnostic — it renders in any web 3D viewer, so it can later be
+handed to a product frontend (static asset or S3) without changing this module.
 
 The viewer has a **Cinematic** dropdown (orbit / witness-path) + speed slider —
 screen-record it for the pitch, or run it live.
@@ -124,7 +125,7 @@ models** — the splat renders only observed geometry.
 **Moving people** (the scene is dynamic — 3DGS assumes static): `--mask-people`
 runs YOLO-seg and writes per-frame masks so Splatfacto trains **only on the static
 scene** (street/building/cars), excluding the crowd. The 3D output becomes a clean
-reconstruction of the *location*; the people stay in the 2D multi-angle player.
+reconstruction of the *building*, with passers-by removed.
 
 ## Tuning / troubleshooting
 
@@ -142,7 +143,7 @@ reconstruction of the *location*; the people stay in the 2D multi-angle player.
 
 ## Live endpoint (Phase 3, optional)
 
-The same `core/` can be wrapped as a RunPod serverless worker (`handler.py`) that
-`services/api` calls on upload. Deferred — the offline GLB above is the demo.
+The same `core/` can be wrapped as a RunPod serverless worker (`handler.py`) the
+Facadia app calls when footage is uploaded. Deferred — the offline GLB is the demo.
 
 See `PLAN.md` for the full plan.

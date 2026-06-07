@@ -1,4 +1,4 @@
-"""OpenEyes 3D reconstruction core.
+"""Facadia 3D reconstruction core.
 
 clips -> frames (frames.py) -> VGGT predictions (reconstruct.py) -> GLB (export.py)
 
