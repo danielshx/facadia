@@ -16,17 +16,13 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{font:14px/1.6 var(--sans);color:var(--text);background:var(--bg);
-    -webkit-font-smoothing:antialiased}
-  a{color:var(--accent);text-decoration:none}
+  body{font:14px/1.6 var(--sans);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
   ::selection{background:rgba(91,140,255,.25)}
 
-  /* top bar */
   header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;
     padding:0 22px;height:58px;background:rgba(10,12,16,.85);backdrop-filter:blur(10px);
     border-bottom:1px solid var(--border-soft)}
   .mark{display:flex;align-items:center;gap:11px}
-  .mark svg{display:block}
   .mark .name{font-size:16px;font-weight:600;letter-spacing:1.5px}
   .mark .name b{color:var(--accent);font-weight:600}
   .mark .tag{font-size:11px;color:var(--faint);letter-spacing:.5px;border-left:1px solid var(--border);
@@ -46,7 +42,6 @@
   main{max-width:1240px;margin:0 auto;padding:26px 22px 80px}
   .empty{color:var(--muted);text-align:center;padding:90px 0;letter-spacing:.3px}
 
-  /* asset header */
   .asset-hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
   .asset-hd h1{font-size:22px;font-weight:600;margin:0;letter-spacing:-.2px}
   .pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:6px;letter-spacing:.3px}
@@ -55,8 +50,7 @@
     padding:12px 0 0;margin-bottom:22px;border-bottom:1px solid var(--hair)}
   .metabar span{color:var(--faint)}.metabar b{color:var(--text);font-weight:500}
 
-  /* KPI tiles */
-  .kpis{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:14px;margin-bottom:26px}
+  .kpis{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:14px;margin-bottom:22px}
   @media(max-width:760px){.kpis{grid-template-columns:1fr 1fr}}
   .kpi{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
   .kpi .lbl{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--faint)}
@@ -67,13 +61,18 @@
     font:600 22px/1 var(--mono)}
   .kpi.health .band{font-size:12px;line-height:1.4;color:var(--muted);margin-top:5px}
 
-  /* section heading */
+  /* tabs */
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--hair);margin-bottom:20px}
+  .tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);
+    font:13px var(--sans);font-weight:500;padding:9px 14px;cursor:pointer;margin-bottom:-1px}
+  .tab:hover{color:var(--text)}
+  .tab.active{color:var(--text);border-bottom-color:var(--accent)}
+
   .sec{display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:12px;letter-spacing:1px;
     text-transform:uppercase;color:var(--faint);font-weight:600}
   .sec::after{content:"";flex:1;height:1px;background:var(--hair)}
   .sec .count{color:var(--muted);font-weight:500;letter-spacing:0}
 
-  /* defect table */
   .tablewrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:30px;background:var(--panel)}
   table{width:100%;border-collapse:collapse;font-size:13px}
   thead th{text-align:left;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);
@@ -92,9 +91,8 @@
   .mbar{width:60px;height:5px;border-radius:3px;background:#222a36;overflow:hidden;display:inline-block;vertical-align:middle}
   .mbar>i{display:block;height:100%}
 
-  /* findings */
   .find{display:grid;grid-template-columns:340px 1fr;gap:0;border:1px solid var(--border);
-    border-radius:12px;overflow:hidden;margin-bottom:16px;background:var(--panel)}
+    border-radius:12px;overflow:hidden;margin-bottom:16px;background:var(--panel);scroll-margin-top:80px}
   @media(max-width:720px){.find{grid-template-columns:1fr}}
   .find .shot{position:relative;background:#06080b;border-right:1px solid var(--border);cursor:zoom-in}
   .find .shot img{display:block;width:100%;height:100%;min-height:200px;object-fit:cover}
@@ -110,13 +108,29 @@
   .kv dt{color:var(--faint);text-transform:uppercase;font-size:10.5px;letter-spacing:.5px;padding-top:2px}
   .kv dd{margin:0;color:#c8d0db}
 
-  /* sign-off */
   .signoff{margin-top:26px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
     padding-top:22px;border-top:1px solid var(--hair)}
   .signoff .ok{display:none;font-size:13px;color:var(--s2)}
 
-  dialog{border:1px solid var(--border);border-radius:12px;padding:0;background:#06080b;
-    box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  /* 3D view */
+  .stage{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 8%, #11151c 0%, #090b0f 70%);height:560px}
+  @media(max-width:760px){.stage{height:440px}}
+  .stage canvas{display:block;width:100%;height:100%;cursor:grab}
+  .stage canvas:active{cursor:grabbing}
+  .legend{position:absolute;left:14px;bottom:14px;display:flex;gap:14px;flex-wrap:wrap;
+    background:rgba(8,11,15,.7);border:1px solid var(--border);border-radius:9px;padding:9px 12px;backdrop-filter:blur(6px)}
+  .legend .it{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+  .legend .sw{width:9px;height:9px;border-radius:50%}
+  .hint{position:absolute;right:14px;top:13px;font:11px var(--mono);color:var(--faint);
+    background:rgba(8,11,15,.6);border:1px solid var(--border);border-radius:8px;padding:6px 10px;text-align:right}
+  .badge3d{position:absolute;left:14px;top:13px;background:rgba(8,11,15,.7);border:1px solid var(--border);
+    border-radius:9px;padding:8px 12px;backdrop-filter:blur(6px)}
+  .badge3d .s{font:600 20px/1 var(--mono)}
+  .badge3d .l{font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);margin-top:3px}
+  .note3d{font-size:11.5px;color:var(--faint);margin-top:10px}
+
+  dialog{border:1px solid var(--border);border-radius:12px;padding:0;background:#06080b;box-shadow:0 30px 80px rgba(0,0,0,.6)}
   dialog img{display:block;max-width:92vw;max-height:88vh}
   dialog .x{position:absolute;top:10px;right:12px;background:rgba(10,12,16,.8);color:var(--text);
     border:1px solid var(--border);border-radius:7px;padding:6px 11px;cursor:pointer;font:12px var(--sans)}
@@ -130,9 +144,7 @@
       <path d="M7 6.5h3M7 10h3M7 13.5h3M14 6.5h3M14 10h3M14 13.5h3" stroke="#5b8cff" stroke-width="1.6" stroke-linecap="round"/>
       <path d="M9.5 21.5v-4h5v4" stroke="#5b8cff" stroke-width="1.6"/>
     </svg>
-    <div>
-      <div class="name"><b>FACADIA</b></div>
-    </div>
+    <div class="name"><b>FACADIA</b></div>
     <span class="tag">Façade Intelligence · MBIS</span>
   </div>
   <div class="spacer"></div>
@@ -149,11 +161,11 @@
 <dialog id="lb"><button class="x" onclick="lb.close()">Close</button><img id="lbimg"></dialog>
 
 <script>
-const SEV = {1:["Cosmetic","--s1"],2:["Minor","--s2"],3:["Moderate","--s3"],
-             4:["Serious","--s4"],5:["Critical","--s5"]};
+const SEV = {1:["Cosmetic","--s1","#6b7a8d"],2:["Minor","--s2","#4a9d8e"],3:["Moderate","--s3","#c79a3e"],
+             4:["Serious","--s4","#d2733b"],5:["Critical","--s5","#d0454b"]};
 const lb = document.getElementById('lb');
-const cssvar = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const bandVar = s => s>=75?'--s2':s>=55?'--s3':s>=35?'--s4':'--s5';
+const bandHex = s => s>=75?'#4a9d8e':s>=55?'#c79a3e':s>=35?'#d2733b':'#d0454b';
 
 function ring(score){
   const r=32,c=2*Math.PI*r,off=c*(1-score/100),col=`var(${bandVar(score)})`;
@@ -169,6 +181,12 @@ function chip(sev){const [lab,v]=SEV[sev];const col=`var(${v})`;
     <span class="dot" style="background:${col}"></span>S${sev} · ${lab}</span>`;}
 function imgSrc(p){if(/^https?:|^data:|^\//.test(p))return p;return p.startsWith('../')?p:'../'+p;}
 const sz = m => m.width_mm!=null ? `${m.width_mm} mm wide` : `${m.area_mm2} mm² area`;
+function showTab(v){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));
+  document.getElementById('view-report').hidden = v!=='report';
+  document.getElementById('view-3d').hidden = v!=='3d';
+  if(v==='3d') Scene3D.resize();
+}
 
 function render(rep){
   const b=rep.building||{},h=rep.health||{},ds=rep.defects||[];
@@ -181,15 +199,13 @@ function render(rep){
 
   const rows = ds.map((d,i)=>{const [lab,v]=SEV[d.severity];const col=`var(${v})`;const m=d.measurement||{};
     return `<tr onclick="document.getElementById('f${i}').scrollIntoView({behavior:'smooth',block:'center'})">
-      <td class="id">${d.id}</td>
-      <td>${chip(d.severity)}</td>
+      <td class="id">${d.id}</td><td>${chip(d.severity)}</td>
       <td>${d.defect_type.replace(/_/g,' ')}</td>
       <td style="color:var(--muted)">${(d.mbis_category||'').replace(/_/g,' ')}</td>
       <td class="num">${m.width_mm!=null?m.width_mm+' mm':(m.area_mm2!=null?m.area_mm2+' mm²':'—')}</td>
       <td><span class="mbar"><i style="width:${(d.confidence*100||0)}%;background:${col}"></i></span>
           <span class="num" style="color:var(--muted)"> ${(d.confidence*100||0).toFixed(0)}%</span></td>
-      <td class="ri ${d.ri_flag?'':'no'}">${d.ri_flag?'Yes':'—'}</td>
-    </tr>`;}).join('');
+      <td class="ri ${d.ri_flag?'':'no'}">${d.ri_flag?'Yes':'—'}</td></tr>`;}).join('');
 
   const findings = ds.map((d,i)=>{const m=d.measurement||{};
     return `<div class="find" id="f${i}">
@@ -203,12 +219,12 @@ function render(rep){
         <div class="meas">${sz(m)}${m.length_mm!=null?` · ${m.length_mm} mm long`:''} ·
           confidence <b>${(d.confidence*100||0).toFixed(0)}%</b></div>
         <p class="report">${d.report_text||''}</p>
-        <dl class="kv">
-          <dt>Cause</dt><dd>${d.cause||'—'}</dd>
+        <dl class="kv"><dt>Cause</dt><dd>${d.cause||'—'}</dd>
           <dt>Anchor</dt><dd>${d.rubric_anchor||'—'}</dd>
-          <dt>Action</dt><dd>${d.recommended_action||'—'}</dd>
-        </dl>
+          <dt>Action</dt><dd>${d.recommended_action||'—'}</dd></dl>
       </div></div>`;}).join('');
+
+  const legend = [1,2,3,4,5].map(s=>`<div class="it"><span class="sw" style="background:${SEV[s][2]}"></span>S${s} ${SEV[s][0]}</div>`).join('');
 
   document.getElementById('app').innerHTML = `
     <div class="asset-hd"><h1>${b.name||'Subject Building'}</h1>
@@ -224,18 +240,151 @@ function render(rep){
       <div class="kpi"><div class="lbl">Flagged for RI</div>
         <div class="val" style="color:var(--s5)">${h.ri_flags??0}</div></div>
     </div>
-    ${ds.length?`<div class="sec">Defect schedule <span class="count">${ds.length}</span></div>
-      <div class="tablewrap"><table>
-        <thead><tr><th>ID</th><th>Severity</th><th>Type</th><th>Category</th><th>Size</th><th>Confidence</th><th>RI</th></tr></thead>
-        <tbody>${rows}</tbody></table></div>
-      <div class="sec">Findings &amp; evidence</div>${findings}`
-      :`<div class="empty">No defects detected — structure within tolerance.</div>`}
-    <div class="signoff">
-      <button class="btn primary" onclick="this.nextElementSibling.style.display='inline';this.disabled=true;this.textContent='Transmitted to RI'">
-        Transmit to Registered Inspector</button>
-      <span class="ok">Sent — awaiting RI verification &amp; signature.</span>
+
+    <div class="tabs">
+      <button class="tab active" data-view="report" onclick="showTab('report')">Report</button>
+      <button class="tab" data-view="3d" onclick="showTab('3d')">3D risk view</button>
+    </div>
+
+    <div id="view-report">
+      ${ds.length?`<div class="sec">Defect schedule <span class="count">${ds.length}</span></div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>ID</th><th>Severity</th><th>Type</th><th>Category</th><th>Size</th><th>Confidence</th><th>RI</th></tr></thead>
+          <tbody>${rows}</tbody></table></div>
+        <div class="sec">Findings &amp; evidence</div>${findings}`
+        :`<div class="empty">No defects detected — structure within tolerance.</div>`}
+      <div class="signoff">
+        <button class="btn primary" onclick="this.nextElementSibling.style.display='inline';this.disabled=true;this.textContent='Transmitted to RI'">
+          Transmit to Registered Inspector</button>
+        <span class="ok">Sent — awaiting RI verification &amp; signature.</span>
+      </div>
+    </div>
+
+    <div id="view-3d" hidden>
+      <div class="stage">
+        <canvas id="scene"></canvas>
+        <div class="badge3d"><div class="s" style="color:${bandHex(h.score??0)}">${h.score??0}<span style="font-size:12px;color:var(--faint)"> /100</span></div>
+          <div class="l">Building-health</div></div>
+        <div class="hint">drag to orbit · scroll to zoom<br>click a marker → finding</div>
+        <div class="legend">${legend}</div>
+      </div>
+      <div class="note3d">Illustrative risk placement on a massing model. True per-defect 3D localisation
+        (back-projection onto the reconstructed geometry) is on the roadmap — see HONESTY.md.</div>
     </div>`;
+
+  Scene3D.mount(document.getElementById('scene'), ds, h);
 }
+
+/* ---------- minimal dependency-free 3D massing viewer ---------- */
+const Scene3D = (() => {
+  let cv, ctx, raf, defs=[], pts=[], cam, hover=-1, drag=false, lx=0, ly=0, auto=true, health=100;
+  const W=2.6, H=4.4, D=1.7;
+
+  function mount(canvas, ds, h){
+    if(!canvas) return;
+    cancelAnimationFrame(raf);
+    cv=canvas; ctx=cv.getContext('2d'); defs=ds||[]; health=(h&&h.score!=null)?h.score:100;
+    cam={yaw:-0.6, pitch:0.32, dist:8.4}; hover=-1; auto=true;
+    // deterministic spread of markers on the front face
+    pts = defs.map((d,i)=>{
+      const u=((i+1)*0.61803398)%1, v=((i+1)*0.75487766)%1;
+      return {x:(u-0.5)*W*0.82, y:(0.10+v*0.80)*H, z:D/2+0.02, sev:d.severity, i};
+    });
+    cv.onmousedown=e=>{drag=true;auto=false;lx=e.clientX;ly=e.clientY;};
+    window.addEventListener('mousemove',onMove);
+    window.addEventListener('mouseup',()=>drag=false);
+    cv.onwheel=e=>{e.preventDefault();auto=false;cam.dist*=(e.deltaY>0?1.08:0.926);cam.dist=Math.max(4.5,Math.min(15,cam.dist));};
+    cv.onclick=()=>{if(hover>=0){showTab('report');const el=document.getElementById('f'+hover);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});}};
+    resize(); loop();
+  }
+  function onMove(e){
+    if(drag){cam.yaw+=(e.clientX-lx)*0.01;cam.pitch+=(e.clientY-ly)*0.008;
+      cam.pitch=Math.max(-0.5,Math.min(0.95,cam.pitch));lx=e.clientX;ly=e.clientY;return;}
+    if(!cv) return;
+    const r=cv.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+    let best=-1,bd=14;
+    for(const p of pts){if(p.sx==null||!p.vis)continue;const dd=Math.hypot(p.sx-mx,p.sy-my);if(dd<bd){bd=dd;best=p.i;}}
+    hover=best; cv.style.cursor = best>=0?'pointer':'grab';
+  }
+  function resize(){
+    if(!cv) return;
+    const r=cv.getBoundingClientRect(), dpr=Math.min(2,window.devicePixelRatio||1);
+    cv.width=r.width*dpr; cv.height=r.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    cv._w=r.width; cv._h=r.height;
+  }
+  function rot(p){
+    const cy=Math.cos(cam.yaw),sy=Math.sin(cam.yaw),cx=Math.cos(cam.pitch),sx=Math.sin(cam.pitch);
+    const x1=p.x*cy+p.z*sy, z1=-p.x*sy+p.z*cy, y1=p.y;
+    return {x:x1, y:y1*cx - z1*sx, z:y1*sx + z1*cx};
+  }
+  function proj(p){
+    const r=rot({x:p.x,y:p.y-H/2,z:p.z}), f=(cv._h||500)*0.92, depth=Math.max(0.1,cam.dist-r.z), s=f/depth;
+    return {X:(cv._w/2)+r.x*s, Y:(cv._h*0.56)-r.y*s, depth, rz:r.z};
+  }
+  function vtx(x,y,z){return {x,y,z};}
+  function faceList(){
+    const x0=-W/2,x1=W/2,y0=0,y1=H,z0=-D/2,z1=D/2;
+    return [
+      {n:[0,0,1], v:[vtx(x0,y0,z1),vtx(x1,y0,z1),vtx(x1,y1,z1),vtx(x0,y1,z1)], front:true},
+      {n:[0,0,-1],v:[vtx(x1,y0,z0),vtx(x0,y0,z0),vtx(x0,y1,z0),vtx(x1,y1,z0)]},
+      {n:[1,0,0], v:[vtx(x1,y0,z1),vtx(x1,y0,z0),vtx(x1,y1,z0),vtx(x1,y1,z1)]},
+      {n:[-1,0,0],v:[vtx(x0,y0,z0),vtx(x0,y0,z1),vtx(x0,y1,z1),vtx(x0,y1,z0)]},
+      {n:[0,1,0], v:[vtx(x0,y1,z1),vtx(x1,y1,z1),vtx(x1,y1,z0),vtx(x0,y1,z0)]},
+    ];
+  }
+  function shade(n){
+    const rn=rot({x:n[0],y:n[1],z:n[2]}); const L=[-0.3,0.55,0.78];
+    const d=Math.max(0,rn.x*L[0]+rn.y*L[1]+rn.z*L[2]); return {lit:0.32+0.68*d, rz:rn.z};
+  }
+  function mix(a,b,t){return a.map((v,i)=>Math.round(v+(b[i]-v)*t));}
+  function draw(){
+    if(!cv) return;
+    ctx.clearRect(0,0,cv._w,cv._h);
+    // ground grid
+    ctx.strokeStyle='rgba(91,140,255,.10)'; ctx.lineWidth=1;
+    const G=3.6, N=9;
+    for(let i=0;i<=N;i++){const t=-G+2*G*i/N;
+      let a=proj({x:t,y:0,z:-G}),b=proj({x:t,y:0,z:G}); ctx.beginPath();ctx.moveTo(a.X,a.Y);ctx.lineTo(b.X,b.Y);ctx.stroke();
+      let c=proj({x:-G,y:0,z:t}),d=proj({x:G,y:0,z:t}); ctx.beginPath();ctx.moveTo(c.X,c.Y);ctx.lineTo(d.X,d.Y);ctx.stroke();}
+    // faces (painter's, backface-culled)
+    const faces=faceList().map(f=>{const sh=shade(f.n);const pv=f.v.map(proj);
+      return {...f, sh, pv, depth:(pv[0].depth+pv[1].depth+pv[2].depth+pv[3].depth)/4};})
+      .filter(f=>f.sh.rz>0.001).sort((a,b)=>b.depth-a.depth);
+    const baseC=[40,48,62], riskC=[150,60,66], tint=Math.max(0,(60-health))/60*0.45;
+    for(const f of faces){
+      const lit=f.sh.lit; let c=baseC.map(v=>Math.round(v*lit));
+      if(f.front) c=mix(c, riskC.map(v=>Math.round(v*lit)), tint);
+      ctx.beginPath();ctx.moveTo(f.pv[0].X,f.pv[0].Y);for(let i=1;i<4;i++)ctx.lineTo(f.pv[i].X,f.pv[i].Y);ctx.closePath();
+      ctx.fillStyle=`rgb(${c[0]},${c[1]},${c[2]})`; ctx.fill();
+      ctx.strokeStyle='rgba(120,140,170,.22)';ctx.lineWidth=1;ctx.stroke();
+    }
+    // markers on the front face (only if it's facing us)
+    const frontVis = shade([0,0,1]).rz>0.001;
+    pts.forEach(p=>p.vis=false);
+    if(frontVis){
+      const order=pts.map(p=>({p,pr:proj(p)})).sort((a,b)=>b.pr.depth-a.pr.depth);
+      for(const {p,pr} of order){
+        p.sx=pr.X; p.sy=pr.Y; p.vis=true;
+        const col=SEV[p.sev][2], rr=(4.2+p.sev*1.6)*(6/pr.depth), big=p.i===hover;
+        ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=big?18:10;
+        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr,0,7); ctx.fillStyle=col; ctx.globalAlpha=.92; ctx.fill();
+        ctx.restore();
+        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr+ (big?5:3),0,7); ctx.strokeStyle=col; ctx.globalAlpha=big?.9:.5;
+        ctx.lineWidth=big?2:1.2; ctx.stroke(); ctx.globalAlpha=1;
+        if(big){
+          const d=defs[p.i], lab=`${d.id}  ·  S${d.severity} ${SEV[d.severity][0]}`;
+          ctx.font='12px ui-monospace,Menlo,monospace'; const tw=ctx.measureText(lab).width;
+          ctx.fillStyle='rgba(8,11,15,.9)'; ctx.strokeStyle=col;
+          const bx=pr.X+12, by=pr.Y-26; ctx.beginPath();ctx.rect(bx,by,tw+16,22);ctx.fill();ctx.lineWidth=1;ctx.stroke();
+          ctx.fillStyle='#e8ecf2'; ctx.fillText(lab,bx+8,by+15);
+        }
+      }
+    }
+  }
+  function loop(){ if(auto&&!drag) cam.yaw+=0.0032; draw(); raf=requestAnimationFrame(loop); }
+  window.addEventListener('resize',()=>{resize&&resize();});
+  return {mount, resize};
+})();
 
 function zoom(src){document.getElementById('lbimg').src=src;lb.showModal();}
 async function loadPath(){const p=document.getElementById('path').value.trim();

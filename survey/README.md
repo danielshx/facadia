@@ -9,7 +9,12 @@ module is the 3D-geometry layer.
 > Runs entirely on a Mac (CPU) — no GPU needed. Only the VLM reasoning step
 > needs network + a model API key.
 
-![Facadia dashboard](../docs/img/dashboard.png)
+![Facadia dashboard — report view](../docs/img/dashboard.png)
+
+The dashboard has two views: the **report** (defect schedule + findings) and a
+**3D risk view** (defects mapped onto a building massing model, orbit + zoom).
+
+![Facadia dashboard — 3D risk view](../docs/img/dashboard-3d.png)
 
 ## The hybrid: a ruler and a surveyor
 

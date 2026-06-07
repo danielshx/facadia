@@ -11,7 +11,13 @@ grades every defect, and drafts the legally required inspection report.
 ![Runs on CPU](https://img.shields.io/badge/surveyor-runs%20on%20CPU-success.svg)
 ![AI](https://img.shields.io/badge/AI-Facadia--VLM-6e56cf.svg)
 
-![Facadia dashboard](docs/img/dashboard.png)
+![Facadia dashboard — report view](docs/img/dashboard.png)
+
+<sub>Report view — defect schedule, severity, measurements, drafted MBIS findings.</sub>
+
+![Facadia dashboard — 3D risk view](docs/img/dashboard-3d.png)
+
+<sub>3D risk view — defects mapped onto the building, orbit + zoom (illustrative placement; see [HONESTY.md](HONESTY.md)).</sub>
 
 </div>
 
