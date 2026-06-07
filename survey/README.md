@@ -1,20 +1,20 @@
 # survey — the Facadia AI building surveyor
 
 Reads a building façade from ordinary drone footage (or stills), **measures** each
-defect in millimetres, has **Claude** name/grade/explain it, and drafts the
+defect in millimetres, has the **Facadia VLM** name/grade/explain it, and drafts the
 legally-required MBIS inspection report — with a human Registered Inspector (RI)
 signing off. This is the core of Facadia. The sibling [`recon3d/`](../recon3d)
 module is the 3D-geometry layer.
 
-> Runs entirely on a Mac (CPU) — no GPU needed. Only the Claude reasoning step
-> needs network + an API key.
+> Runs entirely on a Mac (CPU) — no GPU needed. Only the VLM reasoning step
+> needs network + a model API key.
 
 ![Facadia dashboard](../docs/img/dashboard.png)
 
 ## The hybrid: a ruler and a surveyor
 
 ```
-drone frames ─▶ detect + measure (CV) ─▶ Claude grades & drafts ─▶ score ─▶ report + dashboard
+drone frames ─▶ detect + measure (CV) ─▶ Facadia-VLM grades & drafts ─▶ score ─▶ report + dashboard
  (frames.py)      cracks → width/length      class · severity 1–5      health     report.json
                   corrosion → area (mm)       cause · confidence        0–100      + annotated
                   via GSD (gsd.py)            MBIS category · RI flag              + draft MBIS .md
@@ -27,8 +27,8 @@ drone frames ─▶ detect + measure (CV) ─▶ Claude grades & drafts ─▶ s
   rust-stained **spalling/corrosion** patches by colour and measures their area.
   Pixels → millimetres via the **ground sampling distance** (`core/gsd.py`). It
   only ever reports what it can actually measure — the honest half of the hybrid.
-- **The surveyor — `core/reason.py` (Claude).** Each measured crop + its mm
-  numbers go to Claude (Opus 4.8 by default), which returns a structured verdict:
+- **The surveyor — `core/reason.py` (Facadia VLM).** Each measured crop + its mm
+  numbers go to the Facadia vision-language model, which returns a structured verdict:
   defect class (the five MBIS finish-defect types), severity, likely cause,
   confidence, MBIS category, an RI flag, and a drafted report paragraph. Guardrails:
   it never invents a measurement (mm are passed in as fact), flags any MBIS
@@ -44,7 +44,7 @@ drone frames ─▶ detect + measure (CV) ─▶ Claude grades & drafts ─▶ s
 ## Grounded severity rubric
 
 Severity is not invented — it's anchored in three real, citable standards (encoded
-in the Claude system prompt in `core/reason.py`):
+in the model's system prompt in `core/reason.py`):
 
 - **HK Code of Practice for Structural Use of Concrete 2013** — 0.3 mm design
   crack-width limit.
@@ -58,11 +58,11 @@ public footpath outranks one over a private roof) can lift it.
 ## Run it
 
 ```bash
-# 1) put your Claude key in survey/.env  (gitignored)
-echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env
+# 1) put your model API key in survey/.env  (gitignored)
+echo 'FACADIA_API_KEY=...' > .env
 
 # 2) install deps (CPU-only)
-uv run python -c "import cv2, skimage, anthropic"     # first run syncs the venv
+uv run python -c "import cv2, skimage"     # first run syncs the venv
 
 # 3a) on a folder of façade stills:
 uv run python run.py --images-dir data/samples --out demo --gsd 0.5
@@ -75,8 +75,8 @@ python -m http.server 8000      # then open http://localhost:8000/dashboard/
 ```
 
 Key flags: `--gsd <mm/px>` (or `--standoff-m` to derive it from the camera model),
-`--max-defects` per frame, `--model claude-sonnet-4-6` (faster/cheaper than the
-Opus default), `--location-hint` (exposure context, affects severity),
+`--max-defects` per frame, `--model <id>` (switch the backing VLM tier for
+speed/cost), `--location-hint` (exposure context, affects severity),
 `--building-name`. Output lands in `demo/` (`report.json`, `report.md`,
 `annotated/`).
 
@@ -109,12 +109,12 @@ it.
 
 ```
 survey/
-├── run.py              # CLI: frames → detect+measure → Claude → score → report
+├── run.py              # CLI: frames → detect+measure → VLM → score → report
 ├── core/
 │   ├── frames.py       # sharp frame sampling (clip) / stills loader
 │   ├── gsd.py          # ground sampling distance → pixels to millimetres
 │   ├── detect.py       # CV crack measurement + rust/spalling detector
-│   ├── reason.py       # Claude grading + the code-grounded severity rubric
+│   ├── reason.py       # Facadia-VLM grading + the code-grounded severity rubric
 │   ├── score.py        # 0–100 building-health score
 │   └── report.py       # annotated frames + report.json + draft MBIS report.md
 ├── dashboard/index.html# self-contained viewer (loads ../demo/report.json)

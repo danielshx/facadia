@@ -3,8 +3,8 @@ message: "If you use Facadia, please cite it and the AnySplat paper it builds on
 title: "Facadia — the AI building surveyor"
 abstract: >-
   Facadia reads a building façade from ordinary drone footage, measures each defect
-  in millimetres with classical computer vision, has a vision-language model
-  (Claude) grade and explain it against code-grounded severity standards, and drafts
+  in millimetres with classical computer vision, has its vision-language model
+  grade and explain it against code-grounded severity standards, and drafts
   the legally required façade-inspection report — with a human Registered Inspector
   signing off. A 3D-reconstruction module turns the same footage into a navigable
   model (point cloud / Gaussian splat).

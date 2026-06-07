@@ -13,7 +13,7 @@ its own entry point, its own viewer — so they can be built and demoed separate
 ┌──────────────────────────── survey/  (the AI surveyor) ─────────────────────────────┐  ┌──── recon3d/ (3D) ─────┐
 │                                                                                       │  │                        │
 │  frames.py      detect.py                 reason.py            score.py  report.py     │  │  VGGT poses + depth     │
-│  sharp frame ─▶ CV measurement ─▶ Claude (Opus 4.8) grades ─▶ health ─▶ report.json   │  │       │                 │
+│  sharp frame ─▶ CV measurement ─▶ Facadia-VLM       grades ─▶ health ─▶ report.json   │  │       │                 │
 │  sampling       cracks: width/len          class · severity      0–100   + annotated   │  │       ▼                 │
 │  (or stills)    spalling: area (rust)      cause · confidence            + draft MBIS   │  │  point cloud  OR        │
 │                 px→mm via GSD              MBIS category · RI flag        + dashboard    │  │  AnySplat splat (live)  │
@@ -34,13 +34,13 @@ The core IP is the split between a **ruler** and a **surveyor**:
 | Frames | `core/frames.py` | sharpest frame per window (variance-of-Laplacian), or a stills folder | motion blur ruins measurement |
 | **Ruler** | `core/detect.py` | classical CV: cracks → medial-axis **width/length** (with Hough straight-line suppression so it tracks the crack, not rooflines); rust-stain → spalling/corrosion **area** | a VLM can't reliably count pixels; CV gives defensible mm |
 | Scale | `core/gsd.py` | pixels → millimetres via ground sampling distance | the rubric is written in mm |
-| **Surveyor** | `core/reason.py` | Claude grades: class, severity 1–5, cause, confidence, MBIS category, RI flag, drafted paragraph — measurements handed in as **fact** | reasoning + report + zero-shot on novel defects; never invents a measurement |
+| **Surveyor** | `core/reason.py` | the Facadia VLM grades: class, severity 1–5, cause, confidence, MBIS category, RI flag, drafted paragraph — measurements handed in as **fact** | reasoning + report + zero-shot on novel defects; never invents a measurement |
 | Score | `core/score.py` | 0–100 building-health, super-linear severity penalty | a few critical defects must dominate; seeds the risk score |
 | Report | `core/report.py` | annotated frames + `report.json` + draft MBIS `report.md` | the surface the dashboard renders and the RI signs |
 | View | `dashboard/index.html` | self-contained Palantir-style console | no build step, offline-safe |
 
-**Guardrails (assistive, not autonomous):** Claude never invents a measurement (mm
-passed in as ground truth), every finding carries a confidence, anything tripping an
+**Guardrails (assistive, not autonomous):** the model never invents a measurement
+(mm passed in as ground truth), every finding carries a confidence, anything tripping an
 MBIS detailed-investigation trigger is flagged for the RI, and false positives
 (window frames, joints, ground, people) are dropped. The RI makes the legal call.
 
@@ -59,9 +59,9 @@ Gaussians + camera poses in one forward pass, in seconds, no COLMAP. See
 
 ## Key decisions
 
-- **CPU-first surveyor.** The whole grading pipeline runs on a laptop; only Claude
-  needs the network. The GPU-heavy 3D work is a separate module.
+- **CPU-first surveyor.** The whole grading pipeline runs on a laptop; only the
+  reasoning model needs the network. The GPU-heavy 3D work is a separate module.
 - **Hardware-agnostic ingest.** Any drone footage or stills (`--clip` / `--images-dir`).
-- **Structured output.** Claude returns a validated Pydantic object (`messages.parse`),
-  so the report is machine-checkable, not free text.
+- **Structured output.** The VLM returns a schema-validated object, so the report
+  is machine-checkable, not free text.
 - **Committed showcase.** `survey/demo/` holds a real run so the repo demos on clone.
