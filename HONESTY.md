@@ -6,10 +6,10 @@
 
 `git shortlog -sn` is concentrated under one account, but this is not a solo build.
 
-| Member | GitHub | Did |
+| Member | Did |
 |---|---|
-| Daniel | Tech integration; built `survey/` (defect pipeline + dashboard) and the `recon3d/` 3D work. Almost all commits sit under this account (the build ran on his machine, with AI coding help, see §7). |
-| Geart  | AI/architecture direction for the hybrid pipeline and grading. |
+| Daniel | Tech integration; built `survey/` (defect pipeline + dashboard) and the `recon3d/` 3D work. Almost all commits sit under his account (the build ran on his machine, with AI coding help, see §7). |
+| Geart | AI/architecture direction for the hybrid pipeline and grading. |
 | Lucas | Civil engineering: the code-grounded severity rubric and HK/BRE standards. |
 | Rodrigo | Go-to-market, business model, pitch, and the business video. |
 
