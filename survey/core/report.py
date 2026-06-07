@@ -69,17 +69,18 @@ def annotate_frames(defects: list[dict], out_dir: str) -> dict[str, str]:
             lines = [f'{d["id"]}   {d["defect_type"].upper()}',
                      f'SEV-{sev} {SEV_LABEL[sev].upper()}    {size}'
                      + ('    REFER RI' if d.get("ri_flag") else '')]
-            tw = max(cv2.getTextSize(l, cv2.FONT_HERSHEY_SIMPLEX, 0.46, 1)[0][0] for l in lines)
+            tw = max(cv2.getTextSize(ln, cv2.FONT_HERSHEY_SIMPLEX, 0.46, 1)[0][0] for ln in lines)
             pw, ph = min(tw + 20, W), 40
             px = max(0, min(x, W - pw))
             py = y - ph - 7 if y - ph - 7 >= 0 else min(y + h + 7, H - ph)
             py = max(0, py)
             region = img[py:py + ph, px:px + pw]
-            chip = region.copy(); chip[:] = (17, 14, 12)
+            chip = region.copy()
+            chip[:] = (17, 14, 12)
             cv2.addWeighted(chip, 0.80, region, 0.20, 0, region)
             cv2.line(img, (px, py), (px, py + ph), color, 3, cv2.LINE_AA)  # severity bar
-            for i, l in enumerate(lines):
-                cv2.putText(img, l, (px + 11, py + 16 + i * 17),
+            for i, ln in enumerate(lines):
+                cv2.putText(img, ln, (px + 11, py + 16 + i * 17),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.46, (232, 236, 242), 1, cv2.LINE_AA)
 
         dest = out / f"{Path(frame_path).stem}_annotated.jpg"
