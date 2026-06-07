@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hawkeye — Facade Inspection</title>
+<style>
+  :root{
+    --bg:#0f1623; --panel:#ffffff; --ink:#16202e; --muted:#5b6b7f;
+    --line:#e4e9f0; --accent:#e8893a; --accent-ink:#b9621f;
+    --s1:#2e9e5b; --s2:#8bc34a; --s3:#f3a712; --s4:#ef6c2e; --s5:#d62839;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:#eef1f6}
+  header{background:linear-gradient(120deg,#0f1623,#1c2a40);color:#fff;padding:22px 28px;
+         display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header .logo{font-size:30px}
+  header h1{font-size:20px;margin:0;font-weight:650;letter-spacing:.2px}
+  header .tag{color:#9fb2cc;font-size:13px;margin-top:2px}
+  header .spacer{flex:1}
+  .loadbar{display:flex;gap:8px;align-items:center;font-size:13px;color:#cdd9ea}
+  .loadbar input[type=text]{background:#0c1320;border:1px solid #2a3a55;color:#e8eef7;
+       padding:7px 10px;border-radius:8px;width:230px;font-size:13px}
+  .loadbar button{background:var(--accent);border:0;color:#1a1206;font-weight:650;
+       padding:8px 14px;border-radius:8px;cursor:pointer}
+  .loadbar button:hover{filter:brightness(1.06)}
+  main{max-width:1180px;margin:0 auto;padding:22px}
+  .draft{background:#fff7e9;border:1px solid #f2d6a0;color:#8a5a12;padding:10px 14px;
+         border-radius:10px;font-size:13px;margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;align-items:start}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+        box-shadow:0 1px 2px rgba(20,32,46,.04)}
+  .card .hd{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:650}
+  .card .bd{padding:16px}
+  .score-wrap{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .gauge{position:relative;width:200px;height:200px}
+  .gauge .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+              justify-content:center}
+  .gauge .num b{font-size:46px;line-height:1}
+  .gauge .num span{font-size:12px;color:var(--muted)}
+  .band{margin-top:8px;font-weight:600}
+  .meta{font-size:13px;color:var(--muted);margin-top:14px;width:100%}
+  .meta div{display:flex;justify-content:space-between;padding:5px 0;border-top:1px dashed var(--line)}
+  .meta div:first-child{border-top:0}
+  .stats{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .stat{flex:1;min-width:130px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stat b{font-size:26px;display:block}
+  .stat span{font-size:12px;color:var(--muted)}
+  .defect{display:grid;grid-template-columns:230px 1fr;gap:0;border:1px solid var(--line);
+          border-radius:14px;overflow:hidden;margin-bottom:14px;background:#fff}
+  @media(max-width:680px){.defect{grid-template-columns:1fr}}
+  .defect img{width:100%;height:100%;min-height:160px;object-fit:cover;background:#0c1320;cursor:zoom-in}
+  .defect .info{padding:14px 16px}
+  .row1{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .pill{font-size:12px;font-weight:700;color:#fff;padding:3px 10px;border-radius:999px}
+  .id{font-weight:700}
+  .cat{font-size:12px;color:var(--muted);background:#f1f4f9;padding:3px 9px;border-radius:999px}
+  .flag{font-size:12px;font-weight:700;color:#b42318;background:#fee4e2;padding:3px 9px;border-radius:999px}
+  .measure{font-size:13px;color:var(--ink);margin:6px 0}
+  .measure code{background:#f1f4f9;padding:1px 6px;border-radius:5px}
+  .conf{height:7px;background:#eef1f6;border-radius:5px;overflow:hidden;margin:8px 0;max-width:240px}
+  .conf > i{display:block;height:100%;background:var(--accent)}
+  .txt{font-size:14px;margin:8px 0}
+  .sub{font-size:12px;color:var(--muted)}
+  .signoff{margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .signoff button{background:#16202e;color:#fff;border:0;padding:9px 16px;border-radius:9px;
+       font-weight:650;cursor:pointer}
+  .signoff .ok{color:var(--s1);font-weight:700;display:none}
+  .empty{color:var(--muted);text-align:center;padding:50px}
+  dialog{border:0;border-radius:12px;padding:0;max-width:92vw;max-height:92vh}
+  dialog img{display:block;max-width:92vw;max-height:88vh}
+  dialog .x{position:absolute;top:8px;right:12px;background:#0009;color:#fff;border:0;
+       border-radius:8px;padding:6px 10px;cursor:pointer}
+  h2.sec{font-size:15px;margin:26px 0 10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🦅</div>
+  <div>
+    <h1>Hawkeye — AI Building Surveyor</h1>
+    <div class="tag">Drone facade inspection · MBIS draft report</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="loadbar">
+    <input type="text" id="path" value="../demo/report.json" />
+    <button onclick="loadPath()">Load</button>
+    <input type="file" id="file" accept="application/json" style="display:none" onchange="loadFile(event)">
+    <button onclick="document.getElementById('file').click()" title="Pick a report.json">File…</button>
+  </div>
+</header>
+
+<main id="app"><div class="empty">Load a <code>report.json</code> to view the inspection.</div></main>
+
+<dialog id="lb"><button class="x" onclick="lb.close()">✕ close</button><img id="lbimg"></dialog>
+
+<script>
+const SEV = {1:["Cosmetic","var(--s1)"],2:["Minor","var(--s2)"],3:["Moderate","var(--s3)"],
+             4:["Serious","var(--s4)"],5:["Critical","var(--s5)"]};
+const lb = document.getElementById('lb');
+
+function bandColor(s){return s>=90?'var(--s1)':s>=75?'var(--s2)':s>=55?'var(--s3)':s>=35?'var(--s4)':'var(--s5)';}
+
+function gauge(score){
+  const r=84, c=2*Math.PI*r, off=c*(1-score/100), col=bandColor(score);
+  return `<svg class="gauge" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="${r}" fill="none" stroke="#eef1f6" stroke-width="16"/>
+    <circle cx="100" cy="100" r="${r}" fill="none" stroke="${col}" stroke-width="16"
+       stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"
+       transform="rotate(-90 100 100)"/>
+  </svg><div class="num"><b style="color:${col}">${score}</b><span>/ 100 health</span></div>`;
+}
+
+function imgSrc(p){ // report.json paths are relative to survey/; dashboard is in survey/dashboard/
+  if(/^https?:|^data:|^\//.test(p)) return p;
+  return p.startsWith('../')?p:'../'+p;
+}
+
+function render(rep){
+  const b=rep.building||{}, h=rep.health||{}, ds=rep.defects||[];
+  const app=document.getElementById('app');
+  const meta=[['Address',b.address],['Inspection date',b.inspection_date],
+    ['Source footage',b.footage],['Standoff',(b.standoff_m??'—')+' m'],
+    ['Resolution',(b.gsd_mm_per_px??'—')+' mm/px'],['Model',b.model]]
+    .map(([k,v])=>`<div><span>${k}</span><span>${v??'—'}</span></div>`).join('');
+
+  const defectCards = ds.length ? ds.map(d=>{
+    const [lab,col]=SEV[d.severity]||["?","#888"]; const m=d.measurement||{};
+    return `<div class="defect">
+      <img src="${imgSrc(d.annotated||d.frame)}" onclick="zoom(this.src)" alt="${d.id}">
+      <div class="info">
+        <div class="row1">
+          <span class="id">${d.id}</span>
+          <span class="pill" style="background:${col}">S${d.severity} · ${lab}</span>
+          <span class="cat">${(d.mbis_category||'').replace(/_/g,' ')}</span>
+          ${d.ri_flag?'<span class="flag">⚠ refer to RI</span>':''}
+          <span class="cat">${d.defect_type}</span>
+        </div>
+        <div class="measure">Measured: <code>${m.width_mm??'?'} mm</code> wide
+          · <code>${m.length_mm??'?'} mm</code> long · <code>${m.area_mm2??'?'} mm²</code></div>
+        <div class="sub">confidence ${(d.confidence*100||0).toFixed(0)}%</div>
+        <div class="conf"><i style="width:${(d.confidence*100||0)}%"></i></div>
+        <div class="txt">${d.report_text||''}</div>
+        <div class="sub"><b>Likely cause:</b> ${d.cause||'—'} &nbsp;·&nbsp;
+          <b>Anchor:</b> ${d.rubric_anchor||'—'} &nbsp;·&nbsp;
+          <b>Action:</b> ${d.recommended_action||'—'}</div>
+      </div></div>`;
+  }).join('') : '<div class="empty">No defects found in this inspection.</div>';
+
+  app.innerHTML = `
+    <div class="draft">${rep.disclaimer||'DRAFT — pending Registered Inspector sign-off.'}</div>
+    <div class="grid">
+      <div class="card"><div class="hd">${b.name||'Subject Building'}</div>
+        <div class="bd score-wrap">
+          ${gauge(h.score??0)}
+          <div class="band" style="color:${bandColor(h.score??0)}">${h.band||''}</div>
+          <div class="meta">${meta}</div>
+        </div>
+      </div>
+      <div>
+        <div class="stats">
+          <div class="stat"><b>${h.n_defects??0}</b><span>defects found</span></div>
+          <div class="stat"><b style="color:${(SEV[h.worst_severity]||['','#16202e'])[1]}">${h.worst_severity?('S'+h.worst_severity):'—'}</b><span>worst severity</span></div>
+          <div class="stat"><b style="color:var(--s5)">${h.ri_flags??0}</b><span>flagged for RI</span></div>
+        </div>
+        <h2 class="sec">Defect schedule</h2>
+        ${defectCards}
+        <div class="signoff">
+          <button onclick="this.nextElementSibling.style.display='inline';this.disabled=true;this.textContent='Submitted to RI'">
+            ✍ Send to Registered Inspector for sign-off</button>
+          <span class="ok">✓ Sent — awaiting RI verification &amp; signature</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function zoom(src){document.getElementById('lbimg').src=src;lb.showModal();}
+async function loadPath(){
+  const p=document.getElementById('path').value.trim();
+  try{const r=await fetch(p,{cache:'no-store'});render(await r.json());}
+  catch(e){document.getElementById('app').innerHTML=
+    `<div class="empty">Could not load <code>${p}</code>.<br>Serve survey/ with
+     <code>python -m http.server</code> and open <code>/dashboard/</code>, or use File….<br><br>${e}</div>`;}
+}
+function loadFile(ev){const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();rd.onload=()=>render(JSON.parse(rd.result));rd.readAsText(f);}
+
+// Auto-load the default report if it's there.
+loadPath();
+</script>
+</body>
+</html>
