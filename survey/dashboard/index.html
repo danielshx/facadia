@@ -277,18 +277,18 @@ function render(rep){
 
 /* ---------- minimal dependency-free 3D massing viewer ---------- */
 const Scene3D = (() => {
-  let cv, ctx, raf, defs=[], pts=[], cam, hover=-1, drag=false, lx=0, ly=0, auto=true, health=100;
-  const W=2.6, H=4.4, D=1.7;
+  let cv, ctx, raf, defs=[], pts=[], cam, hover=-1, drag=false, lx=0, ly=0, auto=true, health=100, t=0;
+  const W=3.2, H=4.8, D=2.2, FLOORS=13, COLS_F=6, COLS_S=4;
 
   function mount(canvas, ds, h){
     if(!canvas) return;
     cancelAnimationFrame(raf);
     cv=canvas; ctx=cv.getContext('2d'); defs=ds||[]; health=(h&&h.score!=null)?h.score:100;
-    cam={yaw:-0.6, pitch:0.32, dist:8.4}; hover=-1; auto=true;
-    // deterministic spread of markers on the front face
+    cam={yaw:-0.62, pitch:0.24, dist:9.0}; hover=-1; auto=true; t=0;
+    // place each defect on a window cell of the front façade (deterministic)
     pts = defs.map((d,i)=>{
-      const u=((i+1)*0.61803398)%1, v=((i+1)*0.75487766)%1;
-      return {x:(u-0.5)*W*0.82, y:(0.10+v*0.80)*H, z:D/2+0.02, sev:d.severity, i};
+      const col=(i*2+1)%COLS_F, row=2+((i*4)%(FLOORS-3));
+      return {x:((col+0.5)/COLS_F-0.5)*W, y:((row+0.5)/FLOORS)*H, z:D/2+0.03, sev:d.severity, i};
     });
     cv.onmousedown=e=>{drag=true;auto=false;lx=e.clientX;ly=e.clientY;};
     window.addEventListener('mousemove',onMove);
@@ -321,67 +321,85 @@ const Scene3D = (() => {
     const r=rot({x:p.x,y:p.y-H/2,z:p.z}), f=(cv._h||500)*0.92, depth=Math.max(0.1,cam.dist-r.z), s=f/depth;
     return {X:(cv._w/2)+r.x*s, Y:(cv._h*0.56)-r.y*s, depth, rz:r.z};
   }
-  function vtx(x,y,z){return {x,y,z};}
-  function faceList(){
-    const x0=-W/2,x1=W/2,y0=0,y1=H,z0=-D/2,z1=D/2;
+  function P(o,u,v,s,tt){return {x:o.x+s*u.x+tt*v.x, y:o.y+s*u.y+tt*v.y, z:o.z+s*u.z+tt*v.z};}
+  function rotN(n){return rot({x:n[0],y:n[1],z:n[2]});}
+  function lit(n){const r=rotN(n),L=[-0.34,0.5,0.8];
+    return {l:0.34+0.66*Math.max(0,r.x*L[0]+r.y*L[1]+r.z*L[2]), rz:r.z};}
+  function rgb(c){return `rgb(${c[0]|0},${c[1]|0},${c[2]|0})`;}
+  function scl(c,k){return [c[0]*k,c[1]*k,c[2]*k];}
+  function faces(){
     return [
-      {n:[0,0,1], v:[vtx(x0,y0,z1),vtx(x1,y0,z1),vtx(x1,y1,z1),vtx(x0,y1,z1)], front:true},
-      {n:[0,0,-1],v:[vtx(x1,y0,z0),vtx(x0,y0,z0),vtx(x0,y1,z0),vtx(x1,y1,z0)]},
-      {n:[1,0,0], v:[vtx(x1,y0,z1),vtx(x1,y0,z0),vtx(x1,y1,z0),vtx(x1,y1,z1)]},
-      {n:[-1,0,0],v:[vtx(x0,y0,z0),vtx(x0,y0,z1),vtx(x0,y1,z1),vtx(x0,y1,z0)]},
-      {n:[0,1,0], v:[vtx(x0,y1,z1),vtx(x1,y1,z1),vtx(x1,y1,z0),vtx(x0,y1,z0)]},
+      {wall:1,front:1,n:[0,0,1], o:{x:-W/2,y:0,z:D/2}, u:{x:W,y:0,z:0},  v:{x:0,y:H,z:0}, cols:COLS_F},
+      {wall:1,n:[1,0,0],         o:{x:W/2,y:0,z:D/2},  u:{x:0,y:0,z:-D}, v:{x:0,y:H,z:0}, cols:COLS_S},
+      {wall:1,n:[-1,0,0],        o:{x:-W/2,y:0,z:-D/2},u:{x:0,y:0,z:D},  v:{x:0,y:H,z:0}, cols:COLS_S},
+      {wall:1,n:[0,0,-1],        o:{x:W/2,y:0,z:-D/2}, u:{x:-W,y:0,z:0}, v:{x:0,y:H,z:0}, cols:COLS_F},
+      {roof:1,n:[0,1,0],         o:{x:-W/2,y:H,z:D/2}, u:{x:W,y:0,z:0},  v:{x:0,y:0,z:-D}},
     ];
   }
-  function shade(n){
-    const rn=rot({x:n[0],y:n[1],z:n[2]}); const L=[-0.3,0.55,0.78];
-    const d=Math.max(0,rn.x*L[0]+rn.y*L[1]+rn.z*L[2]); return {lit:0.32+0.68*d, rz:rn.z};
+  function qpath(ps){ctx.beginPath();ctx.moveTo(ps[0].X,ps[0].Y);for(let i=1;i<ps.length;i++)ctx.lineTo(ps[i].X,ps[i].Y);ctx.closePath();}
+  function drawShadow(){
+    const cs=[[-W/2,-D/2],[W/2,-D/2],[W/2,D/2],[-W/2,D/2]].map(c=>proj({x:c[0],y:0,z:c[1]}));
+    let cx=0,cy=0,mnx=1e9,mxx=-1e9; cs.forEach(p=>{cx+=p.X;cy+=p.Y;mnx=Math.min(mnx,p.X);mxx=Math.max(mxx,p.X);});
+    cx/=4;cy/=4; const rx=Math.max(50,(mxx-mnx)*0.7), ry=rx*0.24;
+    ctx.save();ctx.translate(cx,cy+8);ctx.scale(1,ry/rx);
+    const g=ctx.createRadialGradient(0,0,0,0,0,rx);g.addColorStop(0,'rgba(0,0,0,.5)');g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,rx,0,7);ctx.fill();ctx.restore();
   }
-  function mix(a,b,t){return a.map((v,i)=>Math.round(v+(b[i]-v)*t));}
-  function draw(){
-    if(!cv) return;
-    ctx.clearRect(0,0,cv._w,cv._h);
-    // ground grid
-    ctx.strokeStyle='rgba(91,140,255,.10)'; ctx.lineWidth=1;
-    const G=3.6, N=9;
-    for(let i=0;i<=N;i++){const t=-G+2*G*i/N;
-      let a=proj({x:t,y:0,z:-G}),b=proj({x:t,y:0,z:G}); ctx.beginPath();ctx.moveTo(a.X,a.Y);ctx.lineTo(b.X,b.Y);ctx.stroke();
-      let c=proj({x:-G,y:0,z:t}),d=proj({x:G,y:0,z:t}); ctx.beginPath();ctx.moveTo(c.X,c.Y);ctx.lineTo(d.X,d.Y);ctx.stroke();}
-    // faces (painter's, backface-culled)
-    const faces=faceList().map(f=>{const sh=shade(f.n);const pv=f.v.map(proj);
-      return {...f, sh, pv, depth:(pv[0].depth+pv[1].depth+pv[2].depth+pv[3].depth)/4};})
-      .filter(f=>f.sh.rz>0.001).sort((a,b)=>b.depth-a.depth);
-    const baseC=[40,48,62], riskC=[150,60,66], tint=Math.max(0,(60-health))/60*0.45;
-    for(const f of faces){
-      const lit=f.sh.lit; let c=baseC.map(v=>Math.round(v*lit));
-      if(f.front) c=mix(c, riskC.map(v=>Math.round(v*lit)), tint);
-      ctx.beginPath();ctx.moveTo(f.pv[0].X,f.pv[0].Y);for(let i=1;i<4;i++)ctx.lineTo(f.pv[i].X,f.pv[i].Y);ctx.closePath();
-      ctx.fillStyle=`rgb(${c[0]},${c[1]},${c[2]})`; ctx.fill();
-      ctx.strokeStyle='rgba(120,140,170,.22)';ctx.lineWidth=1;ctx.stroke();
+  function drawWall(f){
+    const c=[P(f.o,f.u,f.v,0,0),P(f.o,f.u,f.v,1,0),P(f.o,f.u,f.v,1,1),P(f.o,f.u,f.v,0,1)].map(proj);
+    const base=scl([92,100,116],f.L.l), tm={X:(c[2].X+c[3].X)/2,Y:(c[2].Y+c[3].Y)/2}, bm={X:(c[0].X+c[1].X)/2,Y:(c[0].Y+c[1].Y)/2};
+    const g=ctx.createLinearGradient(tm.X,tm.Y,bm.X,bm.Y); g.addColorStop(0,rgb(scl(base,1.12)));g.addColorStop(1,rgb(scl(base,0.76)));
+    qpath(c);ctx.fillStyle=g;ctx.fill();
+    const rows=FLOORS, cols=f.cols, mh=0.17, mv=0.20, glass=scl([20,26,38],0.7+0.5*f.L.l), warm=[124,106,72];
+    for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+      const s0=(i+mh)/cols,s1=(i+1-mh)/cols,t0=(j+mv)/rows,t1=(j+1-mv)/rows;
+      const w=[P(f.o,f.u,f.v,s0,t1),P(f.o,f.u,f.v,s1,t1),P(f.o,f.u,f.v,s1,t0),P(f.o,f.u,f.v,s0,t0)].map(proj);
+      const on=((i*7+j*13+(f.front?0:5))%9)<2;
+      qpath(w); ctx.fillStyle=on?rgb(scl(warm,0.55+0.5*f.L.l)):rgb(glass); ctx.fill();
+      ctx.strokeStyle='rgba(150,170,200,.10)';ctx.lineWidth=1;ctx.stroke();
     }
-    // markers on the front face (only if it's facing us)
-    const frontVis = shade([0,0,1]).rz>0.001;
-    pts.forEach(p=>p.vis=false);
+    qpath(c);ctx.strokeStyle='rgba(150,170,200,.18)';ctx.lineWidth=1;ctx.stroke();
+  }
+  function drawRoof(f){
+    const c=[P(f.o,f.u,f.v,0,0),P(f.o,f.u,f.v,1,0),P(f.o,f.u,f.v,1,1),P(f.o,f.u,f.v,0,1)].map(proj);
+    qpath(c);ctx.fillStyle=rgb(scl([66,74,90],f.L.l));ctx.fill();
+    qpath(c);ctx.strokeStyle='rgba(150,170,200,.25)';ctx.lineWidth=1.5;ctx.stroke();
+    const x0=-W/2+0.34*W, z0=D/2-0.30*D, x1=x0+0.32*W, z1=z0-0.34*D, yt=H+0.5;
+    [{n:[0,0,1],v:[[x0,H,z0],[x1,H,z0],[x1,yt,z0],[x0,yt,z0]]},
+     {n:[1,0,0],v:[[x1,H,z0],[x1,H,z1],[x1,yt,z1],[x1,yt,z0]]},
+     {n:[0,1,0],v:[[x0,yt,z0],[x1,yt,z0],[x1,yt,z1],[x0,yt,z1]]}]
+      .map(b=>({b,L:lit(b.n),pv:b.v.map(p=>proj({x:p[0],y:p[1],z:p[2]}))})).filter(o=>o.L.rz>0)
+      .forEach(o=>{qpath(o.pv);ctx.fillStyle=rgb(scl([56,62,76],o.L.l));ctx.fill();ctx.strokeStyle='rgba(150,170,200,.2)';ctx.stroke();});
+  }
+  function draw(){
+    if(!cv) return; t++;
+    ctx.clearRect(0,0,cv._w,cv._h);
+    drawShadow();
+    const fs=faces().map(f=>{const L=lit(f.n);const cc=[P(f.o,f.u,f.v,0,0),P(f.o,f.u,f.v,1,1)].map(proj);
+      return {...f,L,depth:(cc[0].depth+cc[1].depth)/2};}).filter(f=>f.L.rz>0.002).sort((a,b)=>b.depth-a.depth);
+    for(const f of fs){ if(f.roof) drawRoof(f); else drawWall(f); }
+    const frontVis=lit([0,0,1]).rz>0.002; pts.forEach(p=>p.vis=false);
     if(frontVis){
       const order=pts.map(p=>({p,pr:proj(p)})).sort((a,b)=>b.pr.depth-a.pr.depth);
+      const pulse=0.5+0.5*Math.sin(t*0.07);
       for(const {p,pr} of order){
-        p.sx=pr.X; p.sy=pr.Y; p.vis=true;
-        const col=SEV[p.sev][2], rr=(4.2+p.sev*1.6)*(6/pr.depth), big=p.i===hover;
-        ctx.save(); ctx.shadowColor=col; ctx.shadowBlur=big?18:10;
-        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr,0,7); ctx.fillStyle=col; ctx.globalAlpha=.92; ctx.fill();
-        ctx.restore();
-        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr+ (big?5:3),0,7); ctx.strokeStyle=col; ctx.globalAlpha=big?.9:.5;
-        ctx.lineWidth=big?2:1.2; ctx.stroke(); ctx.globalAlpha=1;
+        p.sx=pr.X;p.sy=pr.Y;p.vis=true;
+        const col=SEV[p.sev][2], rr=(3.2+p.sev*1.4)*(7/pr.depth), big=p.i===hover;
+        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr+4+pulse*5,0,7);ctx.strokeStyle=col;ctx.globalAlpha=(big?.5:.3)*(1-pulse*0.55);ctx.lineWidth=2;ctx.stroke();ctx.globalAlpha=1;
+        ctx.save();ctx.shadowColor=col;ctx.shadowBlur=big?20:12;
+        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr,0,7);ctx.fillStyle=col;ctx.globalAlpha=.95;ctx.fill();ctx.restore();
+        ctx.beginPath();ctx.arc(pr.X,pr.Y,rr,0,7);ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=1;ctx.stroke();ctx.globalAlpha=1;
         if(big){
-          const d=defs[p.i], lab=`${d.id}  ·  S${d.severity} ${SEV[d.severity][0]}`;
-          ctx.font='12px ui-monospace,Menlo,monospace'; const tw=ctx.measureText(lab).width;
-          ctx.fillStyle='rgba(8,11,15,.9)'; ctx.strokeStyle=col;
-          const bx=pr.X+12, by=pr.Y-26; ctx.beginPath();ctx.rect(bx,by,tw+16,22);ctx.fill();ctx.lineWidth=1;ctx.stroke();
-          ctx.fillStyle='#e8ecf2'; ctx.fillText(lab,bx+8,by+15);
+          const d=defs[p.i], lab=`${d.id}   S${d.severity} ${SEV[d.severity][0]}`;
+          ctx.font='12px ui-monospace,Menlo,monospace';const tw=ctx.measureText(lab).width;
+          const bx=pr.X+12,by=pr.Y-28;ctx.fillStyle='rgba(8,11,15,.92)';ctx.strokeStyle=col;
+          ctx.beginPath();ctx.rect(bx,by,tw+16,22);ctx.fill();ctx.lineWidth=1;ctx.stroke();
+          ctx.fillStyle='#e8ecf2';ctx.fillText(lab,bx+8,by+15);
         }
       }
     }
   }
-  function loop(){ if(auto&&!drag) cam.yaw+=0.0032; draw(); raf=requestAnimationFrame(loop); }
+  function loop(){ if(auto&&!drag) cam.yaw+=0.0026; draw(); raf=requestAnimationFrame(loop); }
   window.addEventListener('resize',()=>{resize&&resize();});
   return {mount, resize};
 })();
