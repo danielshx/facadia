@@ -21,7 +21,7 @@ import cv2
 from core import frames as F
 from core import report as R
 from core import score as S
-from core.detect import detect_defects
+from core.detect import detect_corrosion, detect_defects
 from core.gsd import gsd_from_args
 from core.reason import DEFAULT_MODEL, assess_defect, check_key
 
@@ -77,6 +77,7 @@ def main() -> None:
     candidates: list = []
     for fs in frame_specs:
         candidates += detect_defects(fs.path, str(out), gsd, max_defects=args.max_defects)
+        candidates += detect_corrosion(fs.path, str(out), gsd)   # rust-stain spalling patches
     print(f"[detect] {len(candidates)} candidate region(s) across {len(frame_specs)} frame(s)")
     if not candidates:
         print("No candidate defects detected — try closer/sharper frames or a stills folder.")
