@@ -7,7 +7,7 @@ hybrid) — the number behind the pitch's accuracy slide (jury Q&A Q7 / T5).
 
     uv run python eval/measure_accuracy.py
 
-It prints a Markdown table; nothing here touches Claude or the network.
+It prints a Markdown table; nothing here touches the VLM or the network.
 """
 
 from __future__ import annotations

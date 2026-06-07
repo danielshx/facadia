@@ -1,17 +1,21 @@
-"""The "surveyor": Claude reads the defect, grades it, and drafts the report.
+"""The "surveyor": the Facadia vision-language model grades the defect + drafts the report.
 
-CV measured it (core/detect.py); Claude *names, grades, and explains* it. The
-division is deliberate and is the honest version of the pitch's hybrid claim
-(jury Q&A T3/T4): the language model never invents a measurement — the mm values
-are passed in as ground truth — it reasons over them. Every assessment carries a
-confidence, and anything that trips an MBIS detailed-investigation trigger is
-flagged for the Registered Inspector. We are assistive, not autonomous.
+CV measured it (core/detect.py); the Facadia VLM *names, grades, and explains* it.
+The division is deliberate and is the honest version of the hybrid claim (jury Q&A
+T3/T4): the model never invents a measurement — the mm values are passed in as
+ground truth — it reasons over them. Every assessment carries a confidence, and
+anything that trips an MBIS detailed-investigation trigger is flagged for the
+Registered Inspector. We are assistive, not autonomous.
 
 The severity rubric below is the code-grounded one from the project brief: it is
 anchored in three real, citable standards rather than invented numbers —
   · HK Code of Practice for Structural Use of Concrete 2013 — 0.3 mm design crack-width limit
   · BRE Digest 251 — crack-damage width categories 0–5
   · BD Code of Practice for MBIS & MWIS 2012 (2023 Ed.) — detailed-investigation triggers
+
+Implementation note: the Facadia VLM is served today by a hosted frontier
+vision-language model via API; the roadmap is a proprietary façade model
+fine-tuned on the city-scale building-health dataset (see README → Roadmap).
 """
 
 from __future__ import annotations
@@ -25,10 +29,15 @@ import anthropic
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-# Load survey/.env so ANTHROPIC_API_KEY is available without exporting it.
+# Load survey/.env so the model API key is available without exporting it.
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-DEFAULT_MODEL = "claude-opus-4-8"   # override with --model claude-sonnet-4-6 for speed
+ENGINE = "Facadia-VLM"              # product/display name shown in reports & dashboard
+DEFAULT_MODEL = "claude-opus-4-8"   # backing model id (API); --model to switch tiers
+
+
+def _api_key() -> str | None:
+    return os.environ.get("FACADIA_API_KEY") or os.environ.get("ANTHROPIC_API_KEY")
 
 # --- The code-grounded severity rubric (system prompt) ------------------------
 
@@ -87,7 +96,7 @@ rubric anchor, ending with the recommended action. It is a DRAFT pending RI sign
 
 
 class DefectAssessment(BaseModel):
-    """Claude's structured verdict for one measured defect region."""
+    """The VLM's structured verdict for one measured defect region."""
 
     defect_type: Literal[
         "loose_or_missing_tile", "crack", "bulging_delamination",
@@ -120,8 +129,8 @@ def assess_defect(
     model: str = DEFAULT_MODEL,
     client: anthropic.Anthropic | None = None,
 ) -> DefectAssessment:
-    """Send one defect crop + its mm measurements to Claude; return a graded verdict."""
-    client = client or anthropic.Anthropic()
+    """Send one defect crop + its mm measurements to the Facadia VLM; grade it."""
+    client = client or anthropic.Anthropic(api_key=_api_key())
     data, media = _b64(image_path)
 
     facts = (
@@ -151,10 +160,10 @@ def assess_defect(
         output_format=DefectAssessment,
     )
     if resp.parsed_output is None:
-        raise RuntimeError(f"Claude returned no parseable assessment for {image_path}")
+        raise RuntimeError(f"the model returned no parseable assessment for {image_path}")
     return resp.parsed_output
 
 
 def check_key() -> bool:
-    """True if an API key is available (used by run.py to fail fast with a clear msg)."""
-    return bool(os.environ.get("ANTHROPIC_API_KEY"))
+    """True if a model API key is available (run.py uses this to fail fast)."""
+    return bool(_api_key())

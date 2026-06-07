@@ -2,7 +2,7 @@
 
 No training, no GPU — runs on the Mac today. The job here is *measurement*, not
 classification: find candidate defect regions on a facade frame and measure each
-one's width / length / area in real millimetres (via the GSD). Claude does the
+one's width / length / area in real millimetres (via the GSD). The VLM does the
 naming and grading downstream (core/reason.py); this module only ever reports
 what it can actually measure, which is the honest half of the hybrid pitch
 ("specialized detector for measurable defects + VLM for reasoning").
@@ -13,7 +13,7 @@ Pipeline per frame:
 
 Cracks are dark, thin, elongated, so we rank candidates by area x elongation and
 keep the top-K. Window frames / expansion joints / shadows can look crack-like;
-that is exactly the false-positive set Claude is asked to adjudicate downstream.
+that is exactly the false-positive set the VLM is asked to adjudicate downstream.
 """
 
 from __future__ import annotations

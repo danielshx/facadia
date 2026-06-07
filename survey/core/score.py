@@ -18,7 +18,7 @@ SEVERITY_LABEL = {1: "Cosmetic", 2: "Minor", 3: "Moderate", 4: "Serious", 5: "Cr
 def building_health(defects: list[dict]) -> dict:
     """Return {score, band, counts, worst_severity, ri_flags} from graded defects.
 
-    ``defects`` are the post-Claude records (each has a ``severity`` 1–5 and an
+    ``defects`` are the post-grading records (each has a ``severity`` 1–5 and an
     ``ri_flag``); ``not_a_defect`` regions are expected to be filtered out already.
     """
     if not defects:

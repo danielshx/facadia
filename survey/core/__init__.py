@@ -1,1 +1,1 @@
-"""Facadia survey core: detect -> measure -> reason (Claude) -> score -> report."""
+"""Facadia survey core: detect -> measure -> reason (the VLM) -> score -> report."""

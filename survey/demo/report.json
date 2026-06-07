@@ -6,7 +6,7 @@
     "footage": "data/samples",
     "standoff_m": 15.0,
     "gsd_mm_per_px": 0.5,
-    "model": "claude-opus-4-8"
+    "model": "Facadia-VLM"
   },
   "health": {
     "score": 3,

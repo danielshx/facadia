@@ -1,4 +1,4 @@
-# secrets — the Claude API key lives here, NEVER commit it
+# secrets — the model API key lives here, NEVER commit it
 .env
 
 # scratch output. NOTE: demo/ is intentionally committed as a showcase

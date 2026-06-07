@@ -1,4 +1,4 @@
-"""Facadia survey — drone frames -> measured defects -> Claude grades -> MBIS report.
+"""Facadia survey — drone frames -> measured defects -> the VLM grades -> MBIS report.
 
     python run.py --clip ../DJI_0962_1080p.mp4 --out demo --standoff-m 15
     python run.py --images-dir data/closeups --out demo            # stills instead of video
@@ -6,8 +6,8 @@
 Output (in ``out/``): annotated/ frames, crops/, report.json, report.md.
 Open ../survey/dashboard/index.html and load out/report.json to view it.
 
-Runs entirely on the Mac (CPU). Needs ANTHROPIC_API_KEY in survey/.env for the
-Claude reasoning step.
+Runs entirely on the Mac (CPU). Needs a model API key (FACADIA_API_KEY) in
+survey/.env for the VLM reasoning step.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from core import report as R
 from core import score as S
 from core.detect import detect_corrosion, detect_defects
 from core.gsd import gsd_from_args
-from core.reason import DEFAULT_MODEL, assess_defect, check_key
+from core.reason import DEFAULT_MODEL, ENGINE, assess_defect, check_key
 
 
 def main() -> None:
@@ -40,17 +40,17 @@ def main() -> None:
     p.add_argument("--gsd", type=float, help="override mm/px directly (skip the camera model)")
     p.add_argument("--max-defects", type=int, default=4, help="candidates per frame")
     p.add_argument("--model", default=DEFAULT_MODEL,
-                   help=f"Claude model (default {DEFAULT_MODEL}; e.g. claude-sonnet-4-6)")
+                   help="backing VLM model id (defaults to the highest-quality tier)")
     p.add_argument("--building-name", default="Subject Building (demo)")
     p.add_argument("--address", default="—")
     p.add_argument("--location-hint", default="external wall over public footpath",
-                   help="exposure context handed to Claude (affects severity weighting)")
+                   help="exposure context handed to the VLM (affects severity weighting)")
     p.add_argument("--inspection-date", default=_dt.date.today().isoformat())
     args = p.parse_args()
 
     if not check_key():
-        raise SystemExit("ANTHROPIC_API_KEY not set. Put it in survey/.env "
-                         "(ANTHROPIC_API_KEY=sk-ant-...) and re-run.")
+        raise SystemExit("Model API key not set. Put it in survey/.env "
+                         "(FACADIA_API_KEY=...) and re-run.")
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -82,7 +82,7 @@ def main() -> None:
     if not candidates:
         print("No candidate defects detected — try closer/sharper frames or a stills folder.")
 
-    # 4) Claude grades + drafts each ------------------------------------------
+    # 4) the VLM grades + drafts each ------------------------------------------
     defects: list[dict] = []
     for c in candidates:
         try:
@@ -92,7 +92,7 @@ def main() -> None:
             print(f"  ! {c.id}: assessment failed ({e}); skipping")
             continue
         if a.defect_type == "not_a_defect":
-            print(f"  - {c.id}: Claude judged not a defect (conf {a.confidence:.2f}) — dropped")
+            print(f"  - {c.id}: the VLM judged not a defect (conf {a.confidence:.2f}) — dropped")
             continue
         print(f"  ✓ {c.id}: {a.defect_type} S{a.severity} ({a.severity_label}) "
               f"conf {a.confidence:.2f}{'  ⚠RI' if a.ri_flag else ''}")
@@ -110,7 +110,7 @@ def main() -> None:
         "name": args.building_name, "address": args.address,
         "inspection_date": args.inspection_date, "footage": footage,
         "standoff_m": args.standoff_m, "gsd_mm_per_px": round(gsd, 3),
-        "model": args.model,
+        "model": ENGINE,   # product/display name; backing model id stays internal
     }
     report = R.build_report(building, defects, health, annotated)
     jpath, mpath = R.write_all(report, str(out))
