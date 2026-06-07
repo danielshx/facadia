@@ -97,6 +97,9 @@ measurement; the millimetres come from computer vision and are handed to it as f
   machine-checkable rather than free text.
 - **CPU first.** The whole grading pipeline runs on a laptop, and only the reasoning
   model needs the network. It is reproducible with `uv` (`uv.lock` is committed).
+- **Real GPU reconstruction, not a canned asset.** `recon3d/pipeline.py` runs on a
+  cloud GPU (RunPod, RTX PRO 4000): VGGT recovers the camera poses and depth, then we
+  train a Gaussian splat (nerfstudio Splatfacto) and render the fly-through.
 - **Source-only repo.** Multi-GB drone videos are git-ignored; the demo ships as a
   small committed showcase.
 
