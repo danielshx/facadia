@@ -1,6 +1,6 @@
 # Sample facade-defect images — sources & licenses
 
-These three photos are real building-facade defects used to demo the Hawkeye
+These two photos are real building-facade defects used to demo the Facadia
 survey pipeline (the team's own drone footage is of a modern, defect-free
 building, so these stand in for an aging facade). All are reused under their
 stated open licenses; images were downsized to 1400 px long edge for the repo.
