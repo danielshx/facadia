@@ -9,6 +9,8 @@ module is the 3D-geometry layer.
 > Runs entirely on a Mac (CPU) — no GPU needed. Only the Claude reasoning step
 > needs network + an API key.
 
+![Facadia dashboard](../docs/img/dashboard.png)
+
 ## The hybrid: a ruler and a surveyor
 
 ```
@@ -78,6 +80,21 @@ Opus default), `--location-hint` (exposure context, affects severity),
 `--building-name`. Output lands in `demo/` (`report.json`, `report.md`,
 `annotated/`).
 
+## Accuracy & tests
+
+The measurement half is testable. `eval/measure_accuracy.py` draws synthetic cracks
+of known width and measures them — **mean absolute error ≈ 1.7 px** on the reliable
+band (≥4 px), i.e. sub-millimetre at a typical close-range drone GSD. Hairline
+cracks below ~3 px are the stated limit (jury Q&A T6/T7).
+
+```bash
+uv run python eval/measure_accuracy.py        # prints the accuracy table
+uv run --extra dev pytest                       # 14 fast, network-free tests
+uv run --extra dev ruff check .                 # lint
+```
+
+CI runs `ruff` + `pytest` on every push (see [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)).
+
 ## What's committed as a demo
 
 `data/samples/` holds three open-licensed façade-defect photos (see
@@ -101,6 +118,8 @@ survey/
 │   ├── score.py        # 0–100 building-health score
 │   └── report.py       # annotated frames + report.json + draft MBIS report.md
 ├── dashboard/index.html# self-contained viewer (loads ../demo/report.json)
+├── eval/               # measurement-accuracy harness
+├── tests/              # pytest suite (run in CI)
 ├── data/samples/       # open-licensed demo defect images (+ ATTRIBUTION.md)
 └── demo/               # committed showcase output
 ```
