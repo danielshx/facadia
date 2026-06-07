@@ -6,7 +6,7 @@
 
 - **Inspection date:** 2026-06-07
 - **Source footage:** data/samples
-- **Standoff / GSD:** 15.0 m  ·  0.5 mm/px
+- **GSD:** 0.5 mm/px
 - **Building-health score:** **3/100** (E — critical, urgent action / detailed investigation)
 - **Defects found:** 5  ·  worst severity: 5  ·  flagged for RI: 5
 

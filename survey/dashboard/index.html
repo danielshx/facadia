@@ -174,8 +174,10 @@ function render(rep){
   const b=rep.building||{},h=rep.health||{},ds=rep.defects||[];
   const band=`var(${bandVar(h.score??0)})`;
   const meta=[['Inspection',b.inspection_date],['Source',b.footage],
-    ['Standoff',(b.standoff_m??'—')+' m'],['Resolution',(b.gsd_mm_per_px??'—')+' mm/px'],
-    ['Engine',b.model]].map(([k,v])=>`${k} <b>${v??'—'}</b>`).join('<span>·</span>');
+    ['Standoff',b.standoff_m!=null?b.standoff_m+' m':null],
+    ['Resolution',b.gsd_mm_per_px!=null?b.gsd_mm_per_px+' mm/px':null],
+    ['Engine',b.model]].filter(([,v])=>v!=null&&v!=='')
+    .map(([k,v])=>`${k} <b>${v}</b>`).join('<span>·</span>');
 
   const rows = ds.map((d,i)=>{const [lab,v]=SEV[d.severity];const col=`var(${v})`;const m=d.measurement||{};
     return `<tr onclick="document.getElementById('f${i}').scrollIntoView({behavior:'smooth',block:'center'})">

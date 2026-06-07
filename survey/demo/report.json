@@ -4,7 +4,7 @@
     "address": "\u2014",
     "inspection_date": "2026-06-07",
     "footage": "data/samples",
-    "standoff_m": 15.0,
+    "standoff_m": null,
     "gsd_mm_per_px": 0.5,
     "model": "Facadia-VLM"
   },

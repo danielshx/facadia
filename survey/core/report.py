@@ -117,8 +117,8 @@ def write_markdown(report: dict) -> str:
         "",
         f"- **Inspection date:** {b.get('inspection_date', '—')}",
         f"- **Source footage:** {b.get('footage', '—')}",
-        f"- **Standoff / GSD:** {b.get('standoff_m', '—')} m  ·  "
-        f"{b.get('gsd_mm_per_px', '—')} mm/px",
+        f"- **GSD:** {b.get('gsd_mm_per_px', '—')} mm/px"
+        + (f"  ·  **Standoff:** {b['standoff_m']} m" if b.get('standoff_m') is not None else ""),
         f"- **Building-health score:** **{h['score']}/100** ({h['band']})",
         f"- **Defects found:** {h['n_defects']}  ·  worst severity: "
         f"{h['worst_severity']}  ·  flagged for RI: {h['ri_flags']}",
