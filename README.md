@@ -5,7 +5,7 @@
 **The AI building surveyor.** It reads a façade from ordinary drone footage, grades
 every defect, and drafts the legally required inspection report.
 
-[![CI](https://github.com/danielshx/Hawkeye/actions/workflows/ci.yml/badge.svg)](https://github.com/danielshx/Hawkeye/actions/workflows/ci.yml)
+[![CI](https://github.com/danielshx/facadia/actions/workflows/ci.yml/badge.svg)](https://github.com/danielshx/facadia/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Runs on CPU](https://img.shields.io/badge/surveyor-runs%20on%20CPU-success.svg)
