@@ -1,0 +1,15 @@
+# Große Roh-/Drohnenvideos NICHT committen (per Upload auf den Pod bringen).
+*.MP4
+*.mp4
+*.mov
+*.MOV
+*.m4v
+*.avi
+*.hevc
+
+# Downscale-Ausgaben dieses Workflows
+*_1080p.mp4
+*_720p.mp4
+
+# macOS
+.DS_Store
