@@ -8,7 +8,6 @@ stated open licenses; images were downsized to 1400 px long edge for the repo.
 | File | Defect shown | Source (Wikimedia Commons) | License | Author |
 | --- | --- | --- | --- | --- |
 | `crack_wall.jpg` | Structural crack through a brick/masonry gable facade | [Crack in the wall](https://commons.wikimedia.org/wiki/File:Crack_in_the_wall.jpg) | CC BY-SA 2.0 | Vladimer Shioshvili |
-| `cracked_wall2.jpg` | Fine vertical crack on a rendered/plaster wall | [Cracked Wall](https://commons.wikimedia.org/wiki/File:Cracked_Wall.jpg) | CC BY-SA 4.0 | Gaurav Dhwaj Khadka |
 | `spalling_rebar.jpg` | Concrete spalling with exposed, corroding reinforcement | [Reinforcement corrosion](https://commons.wikimedia.org/wiki/File:Reinforcement_corrosion.JPG) | Public domain | Amit Kenny |
 
 CC BY-SA requires attribution and share-alike; the public-domain image needs

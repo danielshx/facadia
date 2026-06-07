@@ -1,0 +1,191 @@
+{
+  "building": {
+    "name": "Sample Facade (defect demo)",
+    "address": "\u2014",
+    "inspection_date": "2026-06-07",
+    "footage": "data/samples",
+    "standoff_m": 15.0,
+    "gsd_mm_per_px": 0.5,
+    "model": "claude-opus-4-8"
+  },
+  "health": {
+    "score": 3,
+    "band": "E \u2014 critical, urgent action / detailed investigation",
+    "counts": {
+      "Serious": 3,
+      "Moderate": 1,
+      "Critical": 1
+    },
+    "worst_severity": 5,
+    "ri_flags": 5,
+    "n_defects": 5
+  },
+  "defects": [
+    {
+      "id": "crack_wall-D2",
+      "frame": "data/samples/crack_wall.jpg",
+      "frame_name": "crack_wall",
+      "bbox": [
+        650,
+        1219,
+        266,
+        86
+      ],
+      "crop": "demo/crops/crack_wall-D2.jpg",
+      "measurement": {
+        "width_mm": 2.28,
+        "width_max_mm": 7.07,
+        "length_mm": 606.0,
+        "area_mm2": 1175.0
+      },
+      "geom_px": {
+        "width_px": 4.6,
+        "width_max_px": 14.1,
+        "length_px": 1212.0,
+        "area_px": 4700
+      },
+      "defect_type": "crack",
+      "severity": 4,
+      "severity_label": "Serious",
+      "confidence": 0.55,
+      "cause": "Likely a horizontal crack propagating along a mortar bed-joint in the masonry, possibly driven by differential movement, thermal cycling, or moisture-related expansion of the brickwork on this exposed external wall.",
+      "recommended_action": "Repair soon and assess structural impact under RI supervision; given the public footpath exposure, arrange detailed investigation to rule out embedded steel corrosion or movement before patch repair.",
+      "rubric_anchor": "BRE cat. 3-4; crack 5-25 mm (max width 7.07 mm) over a public area; MBIS trigger",
+      "mbis_category": "external_walls",
+      "ri_flag": true,
+      "report_text": "A linear crack was recorded along a mortar/bed-joint of the external masonry wall, measuring 606 mm in length with a mean width of 2.28 mm and a maximum width of 7.07 mm (area 1175 mm2). The maximum width falls in the 5-25 mm band and the defect overhangs a public footpath, anchoring it at Severity 4 (Serious, BRE cat. 3-4) and constituting a plausible MBIS detailed-investigation trigger. The crack should be repaired soon, with the RI assessing structural significance and checking for any associated movement or concealed reinforcement corrosion. This is a draft assessment pending RI verification and sign-off.",
+      "annotated": "demo/annotated/crack_wall_annotated.jpg"
+    },
+    {
+      "id": "crack_wall-D3",
+      "frame": "data/samples/crack_wall.jpg",
+      "frame_name": "crack_wall",
+      "bbox": [
+        339,
+        238,
+        282,
+        58
+      ],
+      "crop": "demo/crops/crack_wall-D3.jpg",
+      "measurement": {
+        "width_mm": 2.47,
+        "width_max_mm": 8.94,
+        "length_mm": 613.5,
+        "area_mm2": 1212.8
+      },
+      "geom_px": {
+        "width_px": 4.9,
+        "width_max_px": 17.9,
+        "length_px": 1227.0,
+        "area_px": 4851
+      },
+      "defect_type": "crack",
+      "severity": 4,
+      "severity_label": "Serious",
+      "confidence": 0.82,
+      "cause": "Vertical/stepped crack propagating through the brick masonry above the opening, likely caused by differential settlement or thermal/structural movement concentrating stress over the lintel/arch zone, possibly aggravated by mortar degradation and water ingress.",
+      "recommended_action": "Repair soon and assess structural impact under RI supervision; given the public footpath below, arrange detailed investigation and consider interim protective measures.",
+      "rubric_anchor": "Severity 4 Serious \u2014 crack 5\u201325 mm (max width 8.94 mm) over a public area; BRE cat. 3\u20134, MBIS trigger.",
+      "mbis_category": "external_walls",
+      "ri_flag": true,
+      "report_text": "A through-thickness crack in the external brick masonry above the opening was recorded, with a measured length of 613.5 mm, mean width 2.47 mm and maximum width 8.94 mm (area 1212.8 mm^2). The maximum width falls in the 5\u201325 mm band and the defect overlies a public footpath, placing it at Severity 4 (Serious) per the rubric (BRE cat. 3\u20134, MBIS detailed-investigation trigger); the crack pattern suggests differential settlement or structural/thermal movement at the lintel zone. Repair should be carried out soon and the structural impact assessed by the RI, with detailed investigation and interim fall-protection over the footpath considered. This is a draft assessment pending RI verification.",
+      "annotated": "demo/annotated/crack_wall_annotated.jpg"
+    },
+    {
+      "id": "crack_wall-D4",
+      "frame": "data/samples/crack_wall.jpg",
+      "frame_name": "crack_wall",
+      "bbox": [
+        619,
+        284,
+        89,
+        172
+      ],
+      "crop": "demo/crops/crack_wall-D4.jpg",
+      "measurement": {
+        "width_mm": 2.63,
+        "width_max_mm": 8.49,
+        "length_mm": 589.5,
+        "area_mm2": 1243.5
+      },
+      "geom_px": {
+        "width_px": 5.3,
+        "width_max_px": 17.0,
+        "length_px": 1179.0,
+        "area_px": 4974
+      },
+      "defect_type": "crack",
+      "severity": 4,
+      "severity_label": "Serious",
+      "confidence": 0.48,
+      "cause": "Likely differential movement/thermal expansion of the masonry, possibly aggravated by mortar joint deterioration and water ingress; the orientation along a brick course leaves some doubt that this could be a weathered recessed mortar joint rather than a true crack.",
+      "recommended_action": "Repair soon and assess structural impact; arrange RI verification and consider detailed investigation given the location over a public footpath.",
+      "rubric_anchor": "BRE cat. 3\u20134 \u2014 crack in the 5\u201325 mm band (max width 8.49 mm) over a public/occupied area; MBIS trigger",
+      "mbis_category": "external_walls",
+      "ri_flag": true,
+      "report_text": "A linear crack was identified on the external masonry wall above a public footpath, measuring 589.5 mm in length with a mean width of 2.63 mm and a maximum width of 8.49 mm (area 1243.5 mm^2). The maximum width falls within the 5\u201325 mm 'Serious' band of the rubric, and its position over a pedestrian thoroughfare elevates the associated falling/stability risk. Note that the crack runs along a brick course and could in part reflect a weathered mortar joint, so on-site verification of crack depth and activity is advised. Recommended action: repair soon and refer to the RI for structural assessment and possible detailed investigation. (Draft pending RI sign-off.)",
+      "annotated": "demo/annotated/crack_wall_annotated.jpg"
+    },
+    {
+      "id": "crack_wall-C1",
+      "frame": "data/samples/crack_wall.jpg",
+      "frame_name": "crack_wall",
+      "bbox": [
+        0,
+        0,
+        920,
+        192
+      ],
+      "crop": "demo/crops/crack_wall-C1.jpg",
+      "measurement": {
+        "area_mm2": 23974.0,
+        "extent_mm": 154.8
+      },
+      "geom_px": {
+        "area_px": 95896
+      },
+      "defect_type": "crack",
+      "severity": 3,
+      "severity_label": "Moderate",
+      "confidence": 0.6,
+      "cause": "Likely thermal/moisture movement and long-term weathering of the terracotta/masonry ornamental cornice, possibly aggravated by water ingress along the vertical joint of the projecting decorative element.",
+      "recommended_action": "Plan localized repair within the inspection cycle; sound and check the surrounding ornamental units for debonding, and seal/repoint the crack to arrest water ingress.",
+      "rubric_anchor": "BRE cat. 2 + concrete/masonry design limit \u2014 visible crack (estimated ~1\u20135 mm range) on an exposed projecting element with possible water ingress.",
+      "mbis_category": "projections",
+      "ri_flag": true,
+      "report_text": "A vertical crack was observed running through the projecting ornamental terracotta/masonry cornice over a public footpath, within a measured affected region of approximately 23,974 mm^2. The CV tool did not return a width value, but the opening appears wider than hairline and is consistent with a Moderate (rubric severity 3) defect on an exposed projecting element, with a risk of water ingress and progressive loosening of decorative units. As the defect sits on a projection above public space, it is flagged for RI review and detailed investigation; recommended action is to sound adjacent units, seal the crack, and plan localized repair within the inspection cycle. This is a draft assessment pending RI verification.",
+      "annotated": "demo/annotated/crack_wall_annotated.jpg"
+    },
+    {
+      "id": "spalling_rebar-C1",
+      "frame": "data/samples/spalling_rebar.jpg",
+      "frame_name": "spalling_rebar",
+      "bbox": [
+        313,
+        379,
+        951,
+        671
+      ],
+      "crop": "demo/crops/spalling_rebar-C1.jpg",
+      "measurement": {
+        "area_mm2": 44987.8,
+        "extent_mm": 212.1
+      },
+      "geom_px": {
+        "area_px": 179951
+      },
+      "defect_type": "spalling",
+      "severity": 5,
+      "severity_label": "Critical",
+      "confidence": 0.95,
+      "cause": "Carbonation and/or chloride-induced corrosion of the reinforcement has caused the steel to expand, fracturing and detaching the concrete cover and exposing the rebar; loss of cover accelerates further corrosion.",
+      "recommended_action": "Immediate action: cordon off and control access to the footpath below, remove loose concrete, and arrange urgent RI assessment with detailed investigation and structural concrete repair.",
+      "rubric_anchor": "Severity 5 Critical \u2014 extensive spalling over public space with exposed/corroding reinforcement [BRE cat. 5; MBIS trigger]",
+      "mbis_category": "external_walls",
+      "ri_flag": true,
+      "report_text": "Extensive spalling of the concrete cover is observed on an external wall over a public footpath, affecting a measured area of approximately 44,988 mm^2, with multiple lengths of reinforcement bar exposed and visibly corroding. The pattern is consistent with reinforcement corrosion (carbonation/chloride attack) driving expansive cracking and loss of cover, and the location above a public footpath presents a falling-debris hazard. This meets the Severity 5 (Critical) anchor \u2014 extensive spalling over public space with exposed/corroding rebar [BRE cat. 5; MBIS detailed-investigation trigger]. Recommended action (draft, pending RI sign-off): take immediate action to control access below, remove loose material, and arrange urgent RI assessment and structural concrete repair.",
+      "annotated": "demo/annotated/spalling_rebar_annotated.jpg"
+    }
+  ],
+  "disclaimer": "DRAFT \u2014 generated by Hawkeye AI surveyor. Pending Registered Inspector (RI) verification and sign-off. Not a legal determination."
+}

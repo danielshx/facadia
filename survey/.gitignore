@@ -1,9 +1,11 @@
 # secrets — the Claude API key lives here, NEVER commit it
 .env
 
-# generated demo output (report.json, annotated images, extracted frames)
+# scratch output. NOTE: demo/ is intentionally committed as a showcase
+# (clone -> open dashboard works), but its intermediate crops/frames are not.
 out/
 frames/
+crops/
 
 # python
 __pycache__/
