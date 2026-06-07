@@ -35,7 +35,7 @@
       <select id="cine">
         <option value="off">off</option>
         <option value="orbit">orbit</option>
-        <option value="path">witness path</option>
+        <option value="path">capture path</option>
       </select></div>
     <div class="row"><label>Speed</label><input id="speed" type="range" min="0.1" max="2" step="0.1" value="0.5"></div>
     <div class="row"><button id="bg">Toggle background</button><button id="fit">Recenter</button></div>
@@ -126,7 +126,7 @@
         scene.add(modelRoot);
         frame();
 
-        // Build a smooth path through the recovered camera centers (witness path).
+        // Build a smooth path through the recovered camera centers (capture path).
         modelRoot.updateMatrixWorld(true);
         const named = cameraNodes
           .map((c) => ({ name: c.name || "", p: c.getWorldPosition(new THREE.Vector3()) }))
@@ -175,7 +175,7 @@
           sceneCenter.z + r * Math.sin(cineT * 0.4));
         camera.lookAt(sceneCenter);
       } else if (mode === "path" && camCurve) {
-        const u = (cineT * 0.08) % 1;                 // loop along the witness path
+        const u = (cineT * 0.08) % 1;                 // loop along the capture path
         camera.position.copy(camCurve.getPoint(u));
         camera.lookAt(sceneCenter);                   // always frame the scene
       }

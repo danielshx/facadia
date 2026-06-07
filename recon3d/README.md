@@ -67,7 +67,7 @@ python -m http.server 8080
 The GLB is frontend-agnostic — it renders in any web 3D viewer, so it can later be
 handed to a product frontend (static asset or S3) without changing this module.
 
-The viewer has a **Cinematic** dropdown (orbit / witness-path) + speed slider —
+The viewer has a **Cinematic** dropdown (orbit / capture-path) + speed slider —
 screen-record it for the pitch, or run it live.
 
 ## One-shot pipeline (photos/clip → fly-through video)

@@ -76,7 +76,7 @@ def _trajectories(extrinsic, intrinsic, multi: bool):
     save_interpolated_video interpolates THROUGH whatever pose sequence we pass
     (with `t` = interpolated frames between consecutive views), so different
     orderings/speeds give visibly different fly-throughs. All are honest — the
-    camera only ever passes through/among the witnessed viewpoints.
+    camera only ever passes through/among the captured viewpoints.
     """
     import torch
 

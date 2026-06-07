@@ -62,7 +62,7 @@ Features that run end-to-end on the live app, with real data and real logic.
 
 | Item | Source (URL or description) | Roughly how much | License |
 |---|---|---|---|
-| `recon3d/` 3D pipeline | Adapted from a **prior personal project** (originally an eyewitness-verification 3D-reconstruction tool, "OpenEyes"); repurposed and rebranded for façade inspection during the hackathon. The off-brand references were cleaned out (see git history). | Module-sized; predates the `survey/` work | Ours (MIT) |
+| `recon3d/` 3D pipeline | The reconstruction **method** is the published **AnySplat** ([arXiv:2505.23716](https://arxiv.org/abs/2505.23716), DOI 10.1145/3763326) + **VGGT** (see rows below) — that is the substantive 3D part, and it's cited in `CITATION.cff` / `docs/anysplat.md`. The surrounding **scaffolding** (CLI, viewer, glue) was adapted from a **prior personal project** ("OpenEyes", an eyewitness-verification 3D tool) and repurposed/rebranded for façade inspection during the hackathon; the off-brand references were cleaned out (see git history). The façade fly-through renders were produced fresh for this project. | Scaffolding is module-sized & predates `survey/`; renders are new | Ours (MIT) |
 | AnySplat | github.com/InternRobotics/AnySplat — installed & integrated in `recon3d/inference/`; follows its `demo_gradio.py`. | Library + ~3 glue lines | MIT |
 | VGGT / VGGT-Omega | github.com/facebookresearch/vggt — model + inference path. | Library | model-specific (Omega: CC-BY-NC) |
 | Ultralytics YOLO | pip `ultralytics` | Library | AGPL |
