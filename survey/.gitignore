@@ -1,0 +1,14 @@
+# secrets — the Claude API key lives here, NEVER commit it
+.env
+
+# generated demo output (report.json, annotated images, extracted frames)
+out/
+frames/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# macOS
+.DS_Store
