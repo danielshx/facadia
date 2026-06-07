@@ -3,9 +3,11 @@
 The **fast / live** path: a folder of photos → 3D Gaussians + camera poses in
 **one forward pass** → rendered fly-through, in seconds. No per-scene training.
 
-Uses **[AnySplat](https://github.com/InternRobotics/AnySplat)** (SIGGRAPH Asia 2025,
-MIT, VGGT-backbone, pose-free / uncalibrated / any number of views) — ideal for
-audience-uploaded photos.
+Implements **[AnySplat](https://github.com/InternRobotics/AnySplat)** (Jiang et al.,
+*ACM TOG* 2025 — [arXiv:2505.23716](https://arxiv.org/abs/2505.23716); MIT,
+VGGT-backbone, pose-free / uncalibrated / any number of views) — ideal for
+operator- or audience-uploaded photos. Why this paper and how we use it:
+[`../../docs/anysplat.md`](../../docs/anysplat.md).
 
 > **Isolated on purpose.** This folder has its **own `uv` venv** (`.venv-anysplat`,
 > Python 3.10 + torch 2.2/cu121). It does **not** touch the working recon3d env

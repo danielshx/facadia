@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use Facadia, please cite it and the AnySplat paper it builds on."
+title: "Facadia — the AI building surveyor"
+abstract: >-
+  Facadia reads a building façade from ordinary drone footage, measures each defect
+  in millimetres with classical computer vision, has a vision-language model
+  (Claude) grade and explain it against code-grounded severity standards, and drafts
+  the legally required façade-inspection report — with a human Registered Inspector
+  signing off. A 3D-reconstruction module turns the same footage into a navigable
+  model (point cloud / Gaussian splat).
+type: software
+authors:
+  - { family-names: "Geart" }
+  - { family-names: "Daniel" }
+  - { family-names: "Lucas" }
+  - { family-names: "Rodrigo" }
+keywords:
+  - façade inspection
+  - building defects
+  - vision-language model
+  - Gaussian splatting
+  - MBIS
+license: MIT
+references:
+  - type: article
+    title: "AnySplat: Feed-forward 3D Gaussian Splatting from Unconstrained Views"
+    authors:
+      - { family-names: Jiang, given-names: Lihan }
+      - { family-names: Mao, given-names: Yucheng }
+      - { family-names: Xu, given-names: Linning }
+      - { family-names: Dai, given-names: Bo }
+    year: 2025
+    doi: "10.1145/3763326"
+    notes: "arXiv:2505.23716 — implemented in recon3d/inference/"
