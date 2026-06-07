@@ -1,4 +1,4 @@
-"""Hawkeye survey — drone frames -> measured defects -> Claude grades -> MBIS report.
+"""Facadia survey — drone frames -> measured defects -> Claude grades -> MBIS report.
 
     python run.py --clip ../DJI_0962_1080p.mp4 --out demo --standoff-m 15
     python run.py --images-dir data/closeups --out demo            # stills instead of video
@@ -27,7 +27,7 @@ from core.reason import DEFAULT_MODEL, assess_defect, check_key
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Hawkeye AI building surveyor")
+    p = argparse.ArgumentParser(description="Facadia AI building surveyor")
     src = p.add_mutually_exclusive_group(required=True)
     src.add_argument("--clip", help="drone video (.mp4)")
     src.add_argument("--images-dir", help="folder of facade stills instead of a clip")

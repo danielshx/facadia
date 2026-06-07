@@ -1,7 +1,7 @@
 [project]
-name = "hawkeye-survey"
+name = "facadia-survey"
 version = "0.1.0"
-description = "Hawkeye AI building surveyor: drone frames -> measured defects -> Claude grades + drafts the MBIS report"
+description = "Facadia AI building surveyor: drone frames -> measured defects -> Claude grades + drafts the MBIS report"
 requires-python = ">=3.10"
 dependencies = [
     "opencv-python>=4.9",

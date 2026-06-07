@@ -14,36 +14,28 @@ from pathlib import Path
 
 import cv2
 
-# Iron-Man / JARVIS HUD palette (BGR): cyan for low severity -> amber -> red alert.
-SEV_BGR = {1: (255, 224, 70), 2: (255, 224, 70), 3: (64, 200, 255),
-           4: (40, 150, 255), 5: (77, 77, 255)}
+# Severity palette (BGR) — muted, Palantir-style; matches the Facadia dashboard.
+SEV_BGR = {1: (141, 122, 107), 2: (142, 157, 74), 3: (62, 154, 199),
+           4: (59, 115, 210), 5: (75, 69, 208)}
 SEV_LABEL = {1: "Cosmetic", 2: "Minor", 3: "Moderate", 4: "Serious", 5: "Critical"}
 MBIS_LABEL = {"external_walls": "External Walls", "projections": "Projections",
               "signboards": "Signboards", "common_parts": "Common Parts"}
 
 
-def _corner_brackets(layer, x, y, w, h, color, t):
-    """Targeting-reticle L-brackets at the four corners (JARVIS look)."""
-    L = int(max(14, min(46, min(w, h) * 0.28)))
+def _corner_brackets(img, x, y, w, h, color, t=2):
+    """Precise L-brackets at the four corners (a clean detection marker)."""
+    L = int(max(12, min(40, min(w, h) * 0.22)))
     for cx, cy, sx, sy in ((x, y, 1, 1), (x + w, y, -1, 1),
                            (x, y + h, 1, -1), (x + w, y + h, -1, -1)):
-        cv2.line(layer, (cx, cy), (cx + sx * L, cy), color, t, cv2.LINE_AA)
-        cv2.line(layer, (cx, cy), (cx, cy + sy * L), color, t, cv2.LINE_AA)
-
-
-def _reticle(layer, cx, cy, color, t):
-    """Centre crosshair + ring."""
-    g = 10
-    cv2.circle(layer, (cx, cy), 13, color, t, cv2.LINE_AA)
-    cv2.line(layer, (cx - g, cy), (cx + g, cy), color, t, cv2.LINE_AA)
-    cv2.line(layer, (cx, cy - g), (cx, cy + g), color, t, cv2.LINE_AA)
-    cv2.circle(layer, (cx, cy), 1, color, -1, cv2.LINE_AA)
+        cv2.line(img, (cx, cy), (cx + sx * L, cy), color, t, cv2.LINE_AA)
+        cv2.line(img, (cx, cy), (cx, cy + sy * L), color, t, cv2.LINE_AA)
 
 
 def annotate_frames(defects: list[dict], out_dir: str) -> dict[str, str]:
-    """Draw an Iron-Man-style targeting HUD over each defect on its source frame.
+    """Mark each defect with a clean detection box + label chip on its frame.
 
-    Corner brackets + crosshair reticle + a tech readout panel, with a soft glow.
+    Faint bounding box + crisp corner brackets + a compact dark readout chip with a
+    coloured severity bar — restrained, not glowy, matching the Facadia dashboard.
     Returns {frame_name: annotated_image_path}.
     """
     out = Path(out_dir) / "annotated"
@@ -60,45 +52,35 @@ def annotate_frames(defects: list[dict], out_dir: str) -> dict[str, str]:
             continue
         H, W = img.shape[:2]
 
-        # Pass 1: thick strokes on a glow layer -> blur -> blend (the neon halo).
-        glow = img.copy() * 0
         for d in ds:
             x, y, w, h = d["bbox"]
             color = SEV_BGR[d["severity"]]
-            _corner_brackets(glow, x, y, w, h, color, 7)
-            _reticle(glow, x + w // 2, y + h // 2, color, 6)
-            cv2.rectangle(glow, (x, y), (x + w, y + h), color, 2, cv2.LINE_AA)
-        glow = cv2.GaussianBlur(glow, (0, 0), 7)
-        img = cv2.addWeighted(img, 1.0, glow, 0.9, 0)
-
-        # Pass 2: crisp strokes + readout panel on top.
-        for d in ds:
-            x, y, w, h = d["bbox"]
-            color = SEV_BGR[d["severity"]]
+            # faint full box, then crisp corner brackets on top
+            box = img.copy()
+            cv2.rectangle(box, (x, y), (x + w, y + h), color, 1, cv2.LINE_AA)
+            cv2.addWeighted(box, 0.45, img, 0.55, 0, img)
             _corner_brackets(img, x, y, w, h, color, 2)
-            _reticle(img, x + w // 2, y + h // 2, color, 1)
-            cv2.rectangle(img, (x, y), (x + w, y + h), color, 1, cv2.LINE_AA)
 
             sev = d["severity"]
-            # ASCII only — OpenCV's Hershey fonts can't render middots or emoji.
             m = d["measurement"]
-            size = (f'W {m["width_mm"]}mm' if m.get("width_mm") is not None
-                    else f'AREA {m.get("area_mm2")}mm2')
-            lines = [f'{d["id"]}  |  {d["defect_type"].upper()}',
-                     f'SEV-{sev} {SEV_LABEL[sev].upper()}  |  {size}'
-                     + ('  [RI]' if d.get("ri_flag") else '')]
-            tw = max(cv2.getTextSize(l, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0][0] for l in lines)
-            pw, ph = tw + 16, 44
-            px, py = x, max(0, y - ph - 8)
-            panel = img[py:py + ph, px:min(W, px + pw)].copy()
-            dark = panel * 0
-            cv2.addWeighted(panel, 0.25, dark, 0.75, 0, panel)
-            img[py:py + ph, px:min(W, px + pw)] = panel
-            cv2.line(img, (px, py), (px + min(pw, W - px), py), color, 2, cv2.LINE_AA)  # bright top rule
-            cv2.line(img, (px + 1, py), (px + 1, py + ph), color, 2, cv2.LINE_AA)        # left rule
+            size = (f'{m["width_mm"]} mm' if m.get("width_mm") is not None
+                    else f'{m.get("area_mm2")} mm2')
+            # ASCII only — Hershey fonts can't render middots/emoji.
+            lines = [f'{d["id"]}   {d["defect_type"].upper()}',
+                     f'SEV-{sev} {SEV_LABEL[sev].upper()}    {size}'
+                     + ('    REFER RI' if d.get("ri_flag") else '')]
+            tw = max(cv2.getTextSize(l, cv2.FONT_HERSHEY_SIMPLEX, 0.46, 1)[0][0] for l in lines)
+            pw, ph = min(tw + 20, W), 40
+            px = max(0, min(x, W - pw))
+            py = y - ph - 7 if y - ph - 7 >= 0 else min(y + h + 7, H - ph)
+            py = max(0, py)
+            region = img[py:py + ph, px:px + pw]
+            chip = region.copy(); chip[:] = (17, 14, 12)
+            cv2.addWeighted(chip, 0.80, region, 0.20, 0, region)
+            cv2.line(img, (px, py), (px, py + ph), color, 3, cv2.LINE_AA)  # severity bar
             for i, l in enumerate(lines):
-                cv2.putText(img, l, (px + 8, py + 18 + i * 18),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (245, 245, 245), 1, cv2.LINE_AA)
+                cv2.putText(img, l, (px + 11, py + 16 + i * 17),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.46, (232, 236, 242), 1, cv2.LINE_AA)
 
         dest = out / f"{Path(frame_path).stem}_annotated.jpg"
         cv2.imwrite(str(dest), img, [cv2.IMWRITE_JPEG_QUALITY, 92])
@@ -116,7 +98,7 @@ def build_report(building: dict, defects: list[dict], health: dict,
             {**d, "annotated": annotated.get(d["frame_name"], d["frame"])}
             for d in defects
         ],
-        "disclaimer": "DRAFT — generated by Hawkeye AI surveyor. Pending Registered "
+        "disclaimer": "DRAFT — generated by the Facadia AI surveyor. Pending Registered "
                       "Inspector (RI) verification and sign-off. Not a legal "
                       "determination.",
     }
@@ -172,7 +154,7 @@ def write_markdown(report: dict) -> str:
             L.append("")
 
     L += ["## 4. Sign-off", "",
-          "_Generated by Hawkeye. The Registered Inspector must verify each finding "
+          "_Generated by Facadia. The Registered Inspector must verify each finding "
           "against the evidence and amend severities as their professional judgment "
           "requires before signing._", "",
           "Registered Inspector: ________________________   Date: ____________", ""]
